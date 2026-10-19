@@ -1,0 +1,91 @@
+<details class="doom-egg" id="can-it-run-doom">
+  <summary>But can it run Doom?</summary>
+  <div class="doom-panel">
+    <div class="doom-heading">
+      <strong>Yes. Yes it can.</strong>
+      <div class="doom-heading-actions">
+        <button type="button" data-doom-expand aria-pressed="false">Play landscape ↗</button>
+        <button type="button" data-doom-close>Back to reading ×</button>
+      </div>
+    </div>
+    <div class="doom-screen" data-doom-screen></div>
+    <p class="doom-note">Arrow keys to move · Ctrl to fire · Space to use · Enter to select.<br />
+      On a phone, touch the pad, then drag gently. Adjust Turn speed to taste. Landscape keeps the controls beside the game.<br />
+      Original shareware episode, not the benchmark build.
+      <a href="/play/doom/index.html?v=4" target="_blank" rel="noopener">Open larger ↗</a>
+    </p>
+  </div>
+</details>
+<script>
+  const egg = document.querySelector<HTMLDetailsElement>('.doom-egg');
+  const screen = egg?.querySelector<HTMLElement>('[data-doom-screen]');
+  const panel = egg?.querySelector<HTMLElement>('.doom-panel');
+  const expand = egg?.querySelector<HTMLButtonElement>('[data-doom-expand]');
+  let previousOverflow = '';
+  const setExpanded = (enabled: boolean) => {
+    if (!panel || !expand) return;
+    if (enabled && !panel.classList.contains('is-expanded')) {
+      previousOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+    } else if (!enabled && panel.classList.contains('is-expanded')) {
+      document.body.style.overflow = previousOverflow;
+    }
+    panel.classList.toggle('is-expanded', enabled);
+    expand.setAttribute('aria-pressed', String(enabled));
+    expand.textContent = enabled ? 'Exit landscape ↙' : 'Play landscape ↗';
+    screen?.querySelector('iframe')?.contentWindow?.postMessage({ type: 'doom-layout', enabled }, window.location.origin);
+  };
+  egg?.addEventListener('toggle', () => {
+    if (!screen) return;
+    if (!egg.open) { setExpanded(false); screen.replaceChildren(); return; }
+    if (screen.firstChild) return;
+    const frame = document.createElement('iframe');
+    frame.src = '/play/doom/index.html?v=4';
+    frame.title = 'Play Doom — shareware episode';
+    frame.allow = 'autoplay; fullscreen';
+    frame.setAttribute('allowfullscreen', '');
+    frame.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-pointer-lock');
+    frame.addEventListener('load', () => {
+      frame.contentWindow?.postMessage({ type: 'doom-layout', enabled: panel?.classList.contains('is-expanded') === true }, window.location.origin);
+    });
+    screen.append(frame);
+  });
+  expand?.addEventListener('click', () => setExpanded(!panel?.classList.contains('is-expanded')));
+  window.addEventListener('message', event => {
+    if (event.origin !== window.location.origin || event.source !== screen?.querySelector('iframe')?.contentWindow || event.data?.type !== 'doom-landscape') return;
+    setExpanded(event.data.enabled === true);
+  });
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && panel?.classList.contains('is-expanded')) { setExpanded(false); expand?.focus(); }
+  });
+  egg?.querySelector('[data-doom-close]')?.addEventListener('click', () => {
+    setExpanded(false);
+    egg.open = false;
+    // Destroy the frame immediately: hiding a canvas would leave the game and audio running.
+    screen?.replaceChildren();
+    egg.querySelector('summary')?.focus();
+  });
+</script>
+<style>
+  .doom-egg { margin-top:48px; border-top:1px solid var(--line); padding-top:20px; }
+  summary { width:fit-content; color:var(--muted); font:12px/1.5 var(--mono); cursor:pointer; padding:10px 0; text-decoration:underline; text-underline-offset:4px; }
+  summary:hover, summary:focus-visible { color:var(--ink); }
+  .doom-panel { margin-top:12px; border:1px solid var(--line); border-radius:10px; overflow:hidden; }
+  .doom-heading { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; padding:12px 14px; font:13px/1.5 var(--mono); }
+  .doom-heading-actions { display:flex; flex-wrap:wrap; gap:8px 16px; }
+  button { color:var(--muted); background:none; border:0; font:inherit; cursor:pointer; min-height:44px; padding:0 4px; }
+  button:hover { color:var(--ink); }
+  .doom-screen { background:#000; }
+  .doom-screen :global(iframe) { display:block; width:100%; height:clamp(360px,65vw,560px); border:0; }
+  .doom-note { padding:14px; margin:0 !important; color:var(--muted); font:11px/1.8 var(--mono); }
+  .doom-note a { display:block; width:fit-content; margin-top:6px; }
+  .doom-panel.is-expanded { position:fixed; inset:0; z-index:1000; margin:0; border:0; border-radius:0; background:#000; display:flex; flex-direction:column; height:100dvh; }
+  .is-expanded .doom-heading { flex-shrink:0; color:#eee; background:#111; padding:0 max(12px,env(safe-area-inset-right)) 0 max(12px,env(safe-area-inset-left)); }
+  .is-expanded .doom-heading strong { display:none; }
+  .is-expanded .doom-heading-actions { width:100%; justify-content:space-between; }
+  .is-expanded .doom-heading button { color:#eee; }
+  .is-expanded .doom-screen { flex:1; min-height:0; }
+  .is-expanded .doom-screen :global(iframe) { height:100%; }
+  .is-expanded .doom-note { display:none; }
+  @media(max-width:600px) { .doom-heading { padding:8px 12px; } .doom-screen :global(iframe) { height:450px; } }
+</style>

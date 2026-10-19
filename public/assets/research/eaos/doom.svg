@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="170" viewBox="0 0 240 85" fill="none" shape-rendering="crispEdges">
+  <title>A pixel-art Doom corridor with an imp, barrels and a first-person weapon</title>
+  <defs>
+    <pattern id="stipple" width="4" height="4" patternUnits="userSpaceOnUse"><path fill="#121212" d="M0 0h1v1H0zm2 2h1v1H2z"/></pattern>
+    <pattern id="shadow" width="2" height="2" patternUnits="userSpaceOnUse"><path fill="#121212" d="M0 0h1v1H0zm1 1h1v1H1z"/></pattern>
+  </defs>
+  <style>
+    .flame { animation:flicker 3s steps(1) infinite; }
+    .right { animation-delay:1.1s; }
+    @keyframes flicker { 0%,35%,50%,82%,100% { opacity:1; } 38%,85% { opacity:.45; } }
+    @media(prefers-reduced-motion:reduce) { .flame { animation:none; } }
+  </style>
+  <!-- A larger, original monochrome scene, with no diagram beside it. -->
+  <path fill="url(#stipple)" opacity=".42" d="M14 9h212l-72 21H86zM14 76l72-20h68l72 20z"/>
+  <path fill="url(#shadow)" opacity=".38" d="m14 9 72 21v26L14 76zm212 0-72 21v26l72 20z"/>
+  <g stroke="#121212" stroke-width="1" stroke-linejoin="miter">
+    <path d="M14 9h212v67H14zM86 30h68v26H86zM14 9l72 21m140-21-72 21M14 76l72-20m140 20-72-20"/>
+    <path d="m14 34 72 5m-72 16 72-8m140-13-72 5m72 16-72-8M48 19v48m30-39v30m114-39v48m-30-39v30"/>
+    <path d="M96 56V28h48v28M100 56V32h40v24M105 56V35h30v21"/>
+    <path d="M100 29h40M104 31h32m-37 4h-3m3 5h-3m3 5h-3m3 5h-3m45-15h3m-3 5h3m-3 5h3m-3 5h3" opacity=".55"/>
+    <path d="m99 56-31 20m73-20 31 20M78 61h84m-97 9h110M120 56v20" opacity=".45"/>
+    <!-- Armored wall panels. -->
+    <path fill="#fafafa" d="m23 28 17 4v23l-17 7zm177 4 17-4v34l-17-7z"/>
+    <path d="m27 34 9 2m-9 4 9 1m-9 5h9m-9 6 9-2m169-14 8-2m-8 7 8-1m-8 6h8m-8 4 8 2"/>
+  </g>
+  <!-- Pixel imp: horns, heavy brow, teeth, claws and a low fighting stance. -->
+  <path fill="#121212" d="M111 34h3v4h12v-4h3v9h-3v4h5v3h4v7h-3v-4h-4v7h-5v-5h-6v5h-5v-7h-4v4h-3v-7h4v-3h5v-4h-3z"/>
+  <path fill="#fafafa" d="M114 41h4v2h-4zm8 0h4v2h-4zm-4 5h4v2h-4zm-1 4h6v1h-6zm-2 3h2v2h-2zm8 0h2v2h-2z"/>
+  <path fill="url(#stipple)" d="M114 44h12v2h-12zm3 8h6v3h-6z"/>
+  <!-- Barrels close to the viewer, with striped metal rims. -->
+  <g stroke="#121212" stroke-width="1">
+    <path fill="#fafafa" d="M56 57h11v15H56zM177 56h10v14h-10z"/>
+    <path fill="url(#shadow)" d="M63 59h3v11h-3zm120-1h3v10h-3z"/>
+    <path d="M56 60h11M56 69h11m-10-13h9m111 3h10m-10 8h10m-9-12h8"/>
+  </g>
+  <path fill="#121212" d="M60 63h3v3h-3zm120-1h3v3h-3z"/>
+  <!-- Small wall flames are the only animation. -->
+  <path fill="#121212" d="M74 37h5v8h-5zm87 0h5v8h-5z"/>
+  <path class="flame" fill="#fafafa" d="M76 32h1v2h2v5h-5v-4h2z"/>
+  <path class="flame right" fill="#fafafa" d="M163 31h1v3h2v5h-5v-4h2z"/>
+  <path class="flame" fill="#121212" d="M76 33h1v4h-1zm87 0h1v4h-1z"/>
+  <!-- Centered shotgun, with a wide receiver, ridged pump and gloved hands. -->
+  <path fill="#121212" d="M107 85V74h5V64h3v-6h10v6h3v10h5v11zM102 78h5v7h-10v-4h5zm31 0h5v3h5v4h-10z"/>
+  <path fill="#fafafa" d="M116 60h8v3h-8zm1 5h6v7h-6zm-3 9h12v2h-12zm-4 5h20v2h-20z"/>
+  <path fill="#121212" d="M118 60h4v1h-4zm-1 15h1v2h-1zm4 0h1v2h-1z"/>
+  <path fill="url(#stipple)" d="M110 81h20v4h-20z"/>
+</svg>

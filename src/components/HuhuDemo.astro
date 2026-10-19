@@ -1,0 +1,346 @@
+---
+import { lensNames, lifeEntries, lifeLinks } from '../data/huhu-demo';
+import { causalScenarios } from '../lib/huhu-counterfactual';
+interface Props { fullscreen?: boolean; }
+const { fullscreen=false }=Astro.props;
+---
+<huhu-demo class:list={{'is-fullscreen':fullscreen}} data-records={JSON.stringify({entries:lifeEntries,links:lifeLinks})}>
+  <header class="demo-toolbar">
+    <div role="group" aria-label="Explore huhu">
+      <button type="button" data-view="story" aria-pressed="true">One small event</button>
+      <button type="button" data-view="hive" aria-pressed="false">Explore the hive</button>
+    </div>
+    {fullscreen ? <a href="/research/huhu#life-graph">Back to article</a> : <a href="/research/huhu/graph">Open larger ↗</a>}
+  </header>
+  <section class="story-view" aria-label="A fictional example">
+    <div class="story-heading">
+      <label class="story-picker">Try a story <select data-scenario>{causalScenarios.map(s=><option value={s.id}>{s.title}</option>)}</select></label>
+      <h3 data-question></h3>
+      <p data-intro></p>
+      <div class="story-switch" role="group" aria-label="Compare the two stories">
+        <button type="button" data-world="actual" aria-pressed="true">What happened</button>
+        <button type="button" data-world="without" aria-pressed="false"></button>
+      </div>
+    </div>
+    <div class="story-content">
+      <div class="story-path">
+        <p class="path-caption" data-path-caption></p>
+        <ol data-steps></ol>
+        <p class="other-path" data-other-path></p>
+      </div>
+      <div class="story-result" aria-live="polite">
+        <p class="result-label" data-result-label></p>
+        <h4 data-result-title></h4>
+        <p data-result-copy></p>
+        <div class="probabilities" hidden>
+          <div><strong data-score-absent></strong><span data-label-absent></span></div>
+          <div><strong data-score-present></strong><span data-label-present></span></div>
+          <p>Probability from 0 to 1. These numbers come from assumptions I chose for this example.</p>
+        </div>
+        <a class="calculation-link" href="/research/huhu#causal-calculation">How I calculate this →</a>
+      </div>
+    </div>
+  </section>
+  <section class="hive-view" hidden aria-label="Connected entries">
+    <div class="hive-help"><p>Each dot is an entry. Tap one to read it. Drag the empty space to turn the hive.</p><button type="button" data-motion>Pause motion</button></div>
+    <div class="lens-filter" role="group" aria-label="Look through a lens">
+      <button type="button" data-lens="" aria-pressed="true">all</button>
+      {lensNames.map(lens=><button type="button" data-lens={lens} aria-pressed="false">{lens}</button>)}
+    </div>
+    <div class="hive-stage">
+      <svg class="hive" viewBox="-360 -360 720 720" aria-label="Interactive spherical network of fictional entries">
+        <g class="graph-viewport">
+          <g class="edges" aria-hidden="true"></g><g class="causal-edges" aria-hidden="true"></g>
+          {lifeEntries.map(entry=>(
+            <g class:list={['life-node',{spark:entry.spark}]} data-entry={entry.id} role="button" tabindex={entry.id==='conversation'?0:-1} aria-label={`Read: ${entry.title}`} aria-pressed="false">
+              <circle class="hit-area" r={entry.spark?19:12} />
+              {entry.spark ? <path class="star" d="M-3-10H3V-5H5V-3H10V3H5V5H3V10H-3V5H-5V3H-10V-3H-5V-5H-3Z" /> : <circle class="neuron" r="3.2" />}
+              <text class="node-label" x="15" y="-10">{entry.title}</text>
+              <text class="causal-probability" display="none"></text><path class="removed-mark" display="none" />
+            </g>
+          ))}
+        </g>
+      </svg>
+      <aside class="entry-reader" hidden aria-live="polite">
+        <button type="button" data-reader-close aria-label="Close entry">×</button>
+        <p class="entry-date" data-date></p><h4 data-title></h4><p data-body></p>
+        <dl class="entry-facts"><div><dt>lenses</dt><dd data-lenses></dd></div><div><dt>made it happen</dt><dd data-who></dd></div></dl>
+        <p class="entry-links-label">Connected entries</p><div data-links></div>
+      </aside>
+    </div>
+  </section>
+  <p class="demo-disclosure">Fictional stories. This shows the idea, not proven causes in someone’s life.</p>
+  <noscript><p>Enable JavaScript to try the example.</p></noscript>
+</huhu-demo>
+<script>
+  import type { LifeEntry, lifeLinks } from '../data/huhu-demo';
+  import { whoLabels } from '../data/huhu-demo';
+  import { createHuhuSphere } from '../lib/huhu-sphere';
+  import { calculateCounterfactual, causalScenarios } from '../lib/huhu-counterfactual';
+  type Story={question:string;intro:string;without:string;steps:[string,string,string][];alternative:string;actual:string;explanation:string;absent:string;present:string;};
+  const stories:Record<string,Story>={
+    conversation:{
+      question:'Could a conversation change what I build weeks later?',
+      intro:'Sam mentions a route home. Almost a month later, I start a project.',
+      without:'Without that conversation',
+      steps:[['conversation','3 September','Sam mentions the canal route'],['new-route','10 September','I try it and notice a workshop'],['workshop','19 September','I visit the workshop'],['device-decision','1 October','I decide to build a device']],
+      alternative:'I also had an older sketch. That idea could have led me to build the device another way.',
+      actual:'The project started. But did it need that conversation?',
+      explanation:'The entries connect the conversation to the project. To ask whether it made a difference, I imagine the same life without it.',
+      absent:'Project does not start by 1 October',present:'Project still starts by 1 October'
+    },
+    run:{
+      question:'Could Tuesday’s run explain Thursday’s pain?',
+      intro:'A run, a change in pace, then pain two days later.',
+      without:'Without that run',
+      steps:[['run','Tuesday','I go for a run'],['pace','Minute 14','My pace slows down'],['ankle','Thursday','I report ankle pain']],
+      alternative:'The hill could explain the slower pace. Pain could have another cause. Slowing down does not itself cause pain in this model.',
+      actual:'The pain came later. That alone does not explain it.',
+      explanation:'I compare what happened with an imagined version where I skipped the run. The pace change is a clue, not proof of an injury.',
+      absent:'The later pain does not occur',present:'The later pain still occurs'
+    },
+    idea:{
+      question:'Would I have had the idea without that walk?',
+      intro:'Something I notice outside becomes an idea for a small tool.',
+      without:'Without that walk',
+      steps:[['walk','4 October, afternoon','I walk beside the river'],['colour','That evening','I want to keep the colour of the water'],['idea','5 October','I imagine a tool for collecting colours']],
+      alternative:'Another place or photograph might have given me the same idea.',
+      actual:'The idea grew from the walk. Was that the only way?',
+      explanation:'I keep the connection to the original thought, then ask whether the idea might still have arrived through something else.',
+      absent:'The tool idea does not arise',present:'The tool idea still arises'
+    },
+    music:{
+      question:'Would I have made the melody without that song?',
+      intro:'Alex sends me a song. Two days later, I try a melody of my own.',
+      without:'Without that song',
+      steps:[['song','7 October','Alex sends me a song'],['music','9 October','I try a melody inspired by it']],
+      alternative:'Another source of inspiration could still have led to that melody.',
+      actual:'The song was an influence. Was it necessary?',
+      explanation:'I imagine not receiving it, while allowing for other inspiration.',
+      absent:'The melody does not arise',present:'The melody still arises'
+    }
+  };
+  class HuhuDemo extends HTMLElement {
+    private cleanup?:()=>void;
+    disconnectedCallback(){this.cleanup?.();}
+    connectedCallback(){
+      if(this.dataset.ready)return;this.dataset.ready='true';
+      const {entries,links}=JSON.parse(this.dataset.records!) as {entries:LifeEntry[];links:typeof lifeLinks};
+      const byId=new Map(entries.map(entry=>[entry.id,entry]));
+      const el=<T extends Element=HTMLElement>(selector:string)=>this.querySelector<T>(selector)!;
+      const params=new URL(location.href).searchParams;
+      let scenario=causalScenarios.find(s=>s.id===params.get('chain'))??causalScenarios[0];
+      let without=false;
+      const renderStory=()=>{
+        const story=stories[scenario.id];
+        this.dataset.world=without?'without':'actual';
+        el<HTMLSelectElement>('[data-scenario]').value=scenario.id;
+        el('[data-question]').textContent=story.question;el('[data-intro]').textContent=story.intro;
+        el('[data-world="without"]').textContent=story.without;
+        this.querySelectorAll<HTMLElement>('[data-world]').forEach(button=>button.setAttribute('aria-pressed',String((button.dataset.world==='without')===without)));
+        el('[data-path-caption]').textContent=without?'Imagine the first event never happened':'Follow the entries, from first to last';
+        const result=calculateCounterfactual(scenario,scenario.nodes[0].id)!;
+        el('[data-steps]').replaceChildren(...story.steps.map(([id,date,text],i)=>{
+          const li=document.createElement('li');li.classList.toggle('left-out',without&&i===0);
+          const time=document.createElement('span');time.className='step-date';time.textContent=date;
+          const label=document.createElement('strong');label.textContent=text;
+          const state=document.createElement('span');state.className='step-state';
+          state.textContent=!without?'':i===0?'Does not happen':result.probabilities[id]===0?'Does not happen':result.probabilities[id]===1?'Still happens':'Might still happen another way';
+          li.append(time,label,state);return li;
+        }));
+        el('[data-other-path]').textContent=story.alternative;
+        el('[data-result-label]').textContent=without?'What might change':'What I want to understand';
+        el('[data-result-title]').textContent=without?'The outcome is no longer certain.':story.actual;
+        el('[data-result-copy]').textContent=without?'Under the assumptions in this example, the calculation gives two possibilities:':story.explanation;
+        el<HTMLElement>('.probabilities').hidden=!without;
+        el('[data-score-absent]').textContent=result.necessity!.toFixed(2);
+        const outcome=scenario.nodes.find(node=>node.role==='outcome')!;
+        el('[data-score-present]').textContent=result.probabilities[outcome.id].toFixed(2);
+        el('[data-label-absent]').textContent=story.absent;el('[data-label-present]').textContent=story.present;
+        el<HTMLElement>('.calculation-link').hidden=!without;
+      };
+      this.querySelectorAll<HTMLElement>('[data-world]').forEach(button=>button.addEventListener('click',()=>{without=button.dataset.world==='without';renderStory();}));
+      el('[data-scenario]').addEventListener('change',event=>{scenario=causalScenarios.find(s=>s.id===(event.target as HTMLSelectElement).value)!;without=false;renderStory();});
+      const svg=el<SVGSVGElement>('.hive'),viewport=el<SVGGElement>('.graph-viewport');
+      const reader=el<HTMLElement>('.entry-reader');
+      const sphere=createHuhuSphere(svg,entries,links);
+      let scale=1,selected='conversation',hiveOpen=false;
+      const transform=()=>viewport.setAttribute('transform',`scale(${scale})`);
+      const motionPreference=matchMedia('(prefers-reduced-motion: reduce)');
+      let motion=!motionPreference.matches;
+      const syncMotion=()=>{sphere.setPlaying(hiveOpen&&motion);el('[data-motion]').textContent=motion?'Pause motion':'Play motion';};
+      const preferenceChanged=()=>{motion=!motionPreference.matches;syncMotion();};
+      motionPreference.addEventListener('change',preferenceChanged);
+      this.cleanup=()=>{sphere.destroy();motionPreference.removeEventListener('change',preferenceChanged);};
+      el('[data-motion]').addEventListener('click',()=>{motion=!motion;syncMotion();});
+      const select=(id:string)=>{
+        const entry=byId.get(id);if(!entry)return;selected=id;
+        el('[data-date]').textContent=entry.date;el('[data-title]').textContent=entry.title;el('[data-body]').textContent=entry.text;
+        el('[data-lenses]').textContent=entry.lenses.join(', ');el('[data-who]').textContent=whoLabels[entry.who];
+        const neighbours=[...new Set(links.filter(l=>l.from===id||l.to===id).map(l=>l.from===id?l.to:l.from))];
+        el('[data-links]').replaceChildren(...neighbours.map(id=>{
+          const button=document.createElement('button');button.type='button';button.textContent=byId.get(id)!.title;button.addEventListener('click',()=>select(id));return button;
+        }));
+        this.querySelectorAll<SVGGElement>('[data-entry]').forEach(node=>{
+          node.classList.toggle('selected',node.dataset.entry===id);node.setAttribute('aria-pressed',String(node.dataset.entry===id));node.setAttribute('tabindex',node.dataset.entry===id?'0':'-1');
+        });
+        sphere.setSelection(id);reader.hidden=false;
+      };
+      // A lens re-weights the hive; it never removes an entry.
+      this.querySelectorAll<HTMLElement>('[data-lens]').forEach(button=>button.addEventListener('click',()=>{
+        const lens=button.dataset.lens;
+        this.querySelectorAll<HTMLElement>('[data-lens]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));
+        this.querySelectorAll<SVGGElement>('[data-entry]').forEach(node=>{
+          const entry=byId.get(node.dataset.entry!)!;
+          node.classList.toggle('outside-lens',Boolean(lens)&&!entry.lenses.includes(lens as LifeEntry['lenses'][number]));
+        });
+      }));
+      el('[data-reader-close]').addEventListener('click',()=>{reader.hidden=true;sphere.setSelection(null);this.querySelectorAll('.selected').forEach(node=>node.classList.remove('selected'));el<SVGGElement>(`[data-entry="${selected}"]`).focus();});
+      this.querySelectorAll<SVGGElement>('[data-entry]').forEach(node=>{
+        node.addEventListener('click',event=>{if(event.detail===0)select(node.dataset.entry!);});
+        node.addEventListener('keydown',event=>{
+          if(event.key==='Enter'||event.key===' '){event.preventDefault();select(node.dataset.entry!);}
+          if(event.key==='ArrowRight'||event.key==='ArrowLeft'){
+            event.preventDefault();const i=entries.findIndex(e=>e.id===selected);const next=entries[(i+(event.key==='ArrowRight'?1:-1)+entries.length)%entries.length];select(next.id);el<SVGGElement>(`[data-entry="${next.id}"]`).focus();
+          }
+        });
+      });
+      this.querySelectorAll<HTMLElement>('[data-view]').forEach(button=>button.addEventListener('click',()=>{
+        hiveOpen=button.dataset.view==='hive';el<HTMLElement>('.story-view').hidden=hiveOpen;el<HTMLElement>('.hive-view').hidden=!hiveOpen;this.classList.toggle('show-hive',hiveOpen);
+        this.querySelectorAll<HTMLElement>('[data-view]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));syncMotion();
+      }));
+      const pointers=new Map<number,{x:number;y:number}>();let lastDistance=0;
+      let draggedNode:SVGGElement|null=null,dragOrigin={x:0,y:0},moved=false;
+      svg.addEventListener('pointerdown',event=>{
+        if(event.button!==0)return;
+        const node=(event.target as Element).closest<SVGGElement>('[data-entry]');
+        pointers.set(event.pointerId,{x:event.clientX,y:event.clientY});lastDistance=0;
+        if(pointers.size===1&&node){
+          draggedNode=node;moved=false;node.dataset.dragged='false';
+          dragOrigin={x:event.clientX,y:event.clientY};
+          sphere.startDrag(node.dataset.entry!,event.clientX,event.clientY);node.setPointerCapture(event.pointerId);
+          svg.classList.add('is-dragging');
+        }else{
+          if(draggedNode){draggedNode.dataset.dragged='true';sphere.endDrag(moved);draggedNode=null;}
+          sphere.startOrbit();svg.classList.add('is-dragging');svg.setPointerCapture(event.pointerId);
+        }
+      });
+      svg.addEventListener('pointermove',event=>{
+        const previous=pointers.get(event.pointerId);if(!previous)return;
+        pointers.set(event.pointerId,{x:event.clientX,y:event.clientY});
+        if(pointers.size===2){
+          const [a,b]=[...pointers.values()];const distance=Math.hypot(a.x-b.x,a.y-b.y);
+          if(lastDistance)scale=Math.max(.65,Math.min(4,scale*distance/lastDistance));lastDistance=distance;transform();
+        }else if(draggedNode){
+          if(Math.hypot(event.clientX-dragOrigin.x,event.clientY-dragOrigin.y)>4)moved=true;
+          if(moved){draggedNode.dataset.dragged='true';sphere.moveDrag(event.clientX,event.clientY);}
+        }else{
+          sphere.rotateBy(event.clientX-previous.x,event.clientY-previous.y);
+        }
+      });
+      const release=(event:PointerEvent)=>{
+        if(!pointers.has(event.pointerId))return;
+        pointers.delete(event.pointerId);lastDistance=0;
+        if(draggedNode){
+          const id=draggedNode.dataset.entry!;sphere.endDrag(moved);draggedNode=null;
+          if(event.type==='pointerup'&&!moved&&!pointers.size)select(id);
+        }
+        if(!pointers.size){sphere.endOrbit(event.type==='pointerup');svg.classList.remove('is-dragging');}
+      };
+      svg.addEventListener('pointerup',release);svg.addEventListener('pointercancel',release);svg.addEventListener('lostpointercapture',release);
+      svg.addEventListener('wheel',event=>{
+        if(!this.classList.contains('is-fullscreen')&&!event.ctrlKey&&!event.metaKey)return;
+        event.preventDefault();scale=Math.max(.65,Math.min(4,scale*Math.exp(-event.deltaY*.001)));transform();
+      },{passive:false});
+
+      renderStory();syncMotion();
+    }
+  }
+  if(!customElements.get('huhu-demo'))customElements.define('huhu-demo',HuhuDemo);
+</script>
+<style>
+  huhu-demo { display:block; container-type:inline-size; border:1px solid var(--edge); border-radius:10px; background:var(--paper); color:var(--ink); font:14px/1.5 var(--sans); overflow:hidden; }
+  [hidden] { display:none !important; }
+  huhu-demo :global(button),select { font:inherit; color:inherit; background:var(--paper); border:1px solid var(--line); border-radius:6px; min-height:44px; padding:8px 12px; cursor:pointer; }
+  huhu-demo :global(button:hover) { border-color:var(--ink); }
+  huhu-demo :global(button:focus-visible),select:focus-visible,a:focus-visible { outline:2px solid var(--ink); outline-offset:3px; }
+  huhu-demo :global(button[aria-pressed="true"]) { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+  a { color:inherit; text-underline-offset:4px; }
+  .demo-toolbar { display:flex; justify-content:space-between; align-items:center; gap:12px; padding:12px 20px; border-bottom:1px solid var(--line); font-size:12px; }
+  .demo-toolbar>div { display:flex; gap:6px; }
+  .demo-toolbar a { white-space:nowrap; }
+  .story-view { max-width:1000px; margin:auto; padding:28px; }
+  .story-picker { display:flex; gap:10px; align-items:center; color:var(--muted); font-size:12px; }
+  .story-picker select { min-width:0; color:var(--ink); }
+  h3 { font-size:clamp(22px,3cqi,30px); line-height:1.3; letter-spacing:-.025em; margin:24px 0 8px; max-width:680px; }
+  [data-intro] { color:var(--muted); margin:0 0 20px; }
+  .story-switch { display:flex; gap:8px; flex-wrap:wrap; }
+  .story-content { display:grid; grid-template-columns:1fr 1fr; gap:32px; margin-top:28px; }
+  .path-caption,.result-label { color:var(--muted); font-size:11px; margin:0 0 18px; }
+  [data-steps] { list-style:none; padding:0; margin:0; }
+  [data-steps] :global(li) { position:relative; padding:0 0 23px 24px; border-left:1px solid var(--line); margin-left:4px; }
+  [data-steps] :global(li::before) { content:''; position:absolute; width:7px; height:7px; background:var(--ink); top:6px; left:-4px; }
+  [data-steps] :global(li:last-child) { border-color:transparent; padding-bottom:0; }
+  [data-steps] :global(strong) { display:block; font-weight:500; }
+  :global(.step-date) { display:block; color:var(--muted); font-size:11px; margin-bottom:3px; }
+  :global(.step-state:not(:empty)) { display:block; font-size:11px; margin-top:3px; color:var(--muted); }
+  [data-steps] :global(.left-out strong) { text-decoration:line-through; color:var(--muted); }
+  [data-steps] :global(.left-out::before) { background:var(--paper); outline:1px solid var(--ink); }
+  .other-path { border-left:1px dashed var(--muted); padding-left:16px; margin:24px 0 0 4px; font-size:12px; color:var(--muted); }
+  .story-result { padding:20px; border:1px solid var(--line); border-radius:10px; align-self:start; }
+  h4 { font-size:19px; line-height:1.4; margin:0 0 12px; font-weight:500; }
+  [data-result-copy] { margin:0; font-size:13px; }
+  .probabilities { margin-top:20px; }
+  .probabilities>div { display:flex; gap:16px; align-items:center; padding:12px 0; border-top:1px solid var(--line); }
+  .probabilities strong { font-size:30px; font-weight:500; line-height:1; font-variant-numeric:tabular-nums; }
+  .probabilities span { font-size:12px; }
+  .probabilities p { color:var(--muted); font-size:11px; margin:14px 0; }
+  .calculation-link { font-size:12px; display:inline-block; padding-block:8px; }
+  .demo-disclosure { border-top:1px solid var(--line); padding:10px 20px; margin:0; color:var(--muted); font-size:11px; }
+  .is-fullscreen { min-height:100dvh; border:0; border-radius:0; }
+  .is-fullscreen .story-view { padding-block:clamp(20px,5vh,60px); }
+  .hive-help { display:flex; align-items:center; justify-content:space-between; gap:14px; padding:12px 20px; font-size:12px; color:var(--muted); }
+  .hive-help p { margin:0; max-width:500px; }
+  .hive-help button { flex-shrink:0; }
+  .hive-stage { position:relative; height:560px; }
+  .is-fullscreen .hive-stage { height:calc(100dvh - 180px); min-height:300px; }
+  .hive { width:100%; height:100%; display:block; touch-action:none; cursor:grab; }
+  .life-node { cursor:grab; opacity:calc(var(--depth-opacity,1) * var(--focus-opacity,1)); }
+  .hive.is-dragging,.is-dragging .life-node { cursor:grabbing; }
+  huhu-demo :global(.edge) { stroke:var(--muted); stroke-width:.7; opacity:calc(var(--depth-opacity,.36) * var(--focus-opacity,1)); vector-effect:non-scaling-stroke; }
+  huhu-demo :global(.linked_to) { stroke-dasharray:2 4; }
+  .star,.neuron { fill:var(--muted); pointer-events:none; }
+  .spark .star,.selected .neuron { fill:var(--ink); }
+  .hit-area { fill:transparent; stroke:transparent; }
+  .selected .hit-area,.is-held .hit-area { stroke:var(--ink); stroke-dasharray:2 4; }
+  .node-label { display:none; fill:var(--ink); font:15px var(--sans); pointer-events:none; paint-order:stroke; stroke:var(--paper); stroke-width:4px; }
+  .selected .node-label,.is-held .node-label,.life-node:hover .node-label { display:block; }
+  .life-node:focus-visible .hit-area { stroke:var(--ink); stroke-width:2; }
+  .entry-reader { position:absolute; right:16px; top:16px; bottom:16px; width:min(300px,calc(100% - 32px)); background:var(--paper); padding:20px; border:1px solid var(--edge); border-radius:10px; overflow:auto; box-sizing:border-box; }
+  [data-reader-close] { float:right; font-size:20px; margin:-8px -8px 8px 8px; }
+  .entry-date,.entry-links-label { font-size:11px; color:var(--muted); }
+  .lens-filter { display:flex; flex-wrap:wrap; gap:6px; padding:0 20px 12px; }
+  .lens-filter button { min-height:36px; padding:4px 10px; font-size:12px; }
+  .outside-lens { opacity:calc(var(--depth-opacity,1) * var(--focus-opacity,1) * .15); }
+  .entry-facts { margin:0 0 14px; font-size:12px; border-top:1px solid var(--line); }
+  .entry-facts div { display:flex; justify-content:space-between; gap:12px; padding:6px 0; border-bottom:1px solid var(--line); }
+  .entry-facts dt { color:var(--muted); }
+  .entry-facts dd { margin:0; text-align:right; }
+  [data-links] :global(button) { display:block; text-align:left; width:100%; margin-bottom:6px; font-size:12px; }
+  @container(max-width:620px) {
+    .demo-toolbar { padding:8px 12px; flex-wrap:wrap; gap:4px; }
+    .demo-toolbar a { padding:8px 0; }
+    .story-view,.is-fullscreen .story-view { padding:20px 16px; }
+    [data-world="without"] .story-result { grid-row:1; }
+    .story-content { grid-template-columns:1fr; gap:24px; }
+    .story-picker { flex-direction:column; align-items:start; gap:4px; }
+    .story-picker select { width:100%; }
+    h3 { margin-top:20px; }
+    .story-switch { flex-direction:column; }
+    .story-switch button { text-align:left; }
+    .story-result { padding:18px; }
+    .demo-disclosure { padding-inline:16px; }
+    .hive-help { padding:12px; align-items:start; }
+    .hive-stage { height:460px; }
+  }
+</style>

@@ -1,0 +1,16 @@
+---
+const token = import.meta.env.PUBLIC_CLOUDFLARE_WEB_ANALYTICS_TOKEN?.trim();
+const hostname = Astro.site?.hostname;
+---
+{import.meta.env.PROD && token && hostname && (
+  <script is:inline define:vars={{ token, hostname }}>
+    (function () {
+      if (location.hostname !== hostname || navigator.doNotTrack === '1') return;
+      var beacon = document.createElement('script');
+      beacon.type = 'module';
+      beacon.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+      beacon.dataset.cfBeacon = JSON.stringify({ token: token });
+      document.body.appendChild(beacon);
+    })();
+  </script>
+)}

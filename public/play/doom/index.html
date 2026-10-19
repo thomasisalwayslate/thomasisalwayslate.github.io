@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex" />
+  <meta name="referrer" content="no-referrer" />
+  <title>Yes, it runs Doom.</title>
+  <link rel="stylesheet" href="https://v8.js-dos.com/latest/js-dos.css" />
+  <style>
+    html,body { width:100%; height:100%; margin:0; background:#000; color:#eee; font:13px/1.5 monospace; }
+    html,body { overflow:hidden; }
+    #player-shell { width:100%; height:100%; display:flex; flex-direction:column; background:#000; }
+    #player-toolbar { display:flex; align-items:center; justify-content:space-between; gap:12px; min-height:42px; padding:0 12px; background:#111; box-sizing:border-box; }
+    #layout-toggle { min-height:36px; padding:0 10px; }
+    .sensitivity { display:flex; align-items:center; gap:8px; font-size:10px; color:#bbb; }
+    #turn-speed { width:80px; min-height:36px; margin:0; accent-color:#ddd; }
+    #turn-speed-value { min-width:3ch; }
+    #playfield { display:grid; grid-template-rows:minmax(0,1fr) auto; flex:1; min-height:0; position:relative; }
+    #dos { width:100%; height:100%; min-width:0; min-height:0; }
+    button { min-height:44px; border:1px solid #505050; border-radius:8px; background:#242424; color:#eee; font:12px monospace; touch-action:none; user-select:none; -webkit-user-select:none; cursor:pointer; }
+    button.is-held, button:active { background:#555; color:#fff; }
+    button:disabled { opacity:.4; }
+    #joystick:focus-visible, button:focus-visible, input:focus-visible { outline:2px solid #fff; outline-offset:3px; }
+    #touch { display:none; }
+    @media (max-width:600px), (pointer:coarse) {
+      #touch { display:flex; flex-direction:column; gap:10px; padding:12px max(12px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left)); background:#111; }
+    }
+    .controls-main { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+    .stick-area { text-align:center; }
+    #joystick { position:relative; width:132px; height:132px; border:1px solid #484848; border-radius:50%; background:radial-gradient(circle,#262626 0 34%,#171717 35% 63%,#202020 64%); touch-action:none; user-select:none; -webkit-user-select:none; box-sizing:border-box; }
+    #joystick::before, #joystick::after { content:''; position:absolute; background:#444; opacity:.5; }
+    #joystick::before { width:1px; height:80%; top:10%; left:50%; }
+    #joystick::after { height:1px; width:80%; left:10%; top:50%; }
+    .stick-knob { position:absolute; width:52px; height:52px; left:calc(50% - 26px); top:calc(50% - 26px); z-index:1; border-radius:50%; background:linear-gradient(#575757,#333); box-shadow:0 3px 8px #0009,inset 0 1px #777; pointer-events:none; }
+    #joystick.is-held .stick-knob { background:linear-gradient(#777,#505050); }
+    #joystick[aria-disabled=true] { opacity:.4; pointer-events:none; }
+    .stick-area small { display:block; margin-top:6px; color:#aaa; font-size:10px; }
+    .actions { display:flex; align-items:center; gap:10px; }
+    .fire { width:68px; height:68px; border-radius:50%; background:#eee; border-color:#fff; color:#111; font-weight:bold; }
+    .use { width:50px; height:50px; border-radius:50%; }
+    .utility-row { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; }
+    /* In landscape, the hands sit beside the 4:3 screen, never on top of it. */
+    @media (min-aspect-ratio:3/2) and (max-height:600px) {
+      #playfield { grid-template-columns:144px minmax(0,1fr) 144px; gap:8px; padding:0 max(12px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left)); }
+      #dos { grid-column:2; grid-row:1; }
+      #touch, .controls-main { display:contents; }
+      .stick-area { grid-column:1; grid-row:1 / 3; align-self:center; justify-self:center; }
+      .actions { grid-column:3; grid-row:1 / 3; flex-direction:column; justify-content:center; }
+      .utility-row { grid-column:2; grid-row:2; padding-top:6px; }
+    }
+    .landscape #playfield { grid-template-columns:144px minmax(0,1fr) 120px; gap:8px; padding:0 12px 8px; }
+    .landscape #dos { grid-column:2; grid-row:1; }
+    .landscape #touch, .landscape .controls-main { display:contents; }
+    .landscape .stick-area { grid-column:1; grid-row:1 / 3; align-self:center; justify-self:center; }
+    .landscape .actions { grid-column:3; grid-row:1 / 3; flex-direction:column; justify-content:center; }
+    .landscape .utility-row { grid-column:2; grid-row:2; padding-top:6px; }
+    @media (orientation:portrait) {
+      .landscape #player-shell { position:absolute; left:50%; top:50%; width:100dvh; height:100dvw; transform:translate(-50%,-50%) rotate(90deg); }
+    }
+    @media (max-width:320px) {
+      #joystick { width:104px; height:104px; }
+      .actions { gap:8px; } .fire { width:60px; height:60px; } .use { width:46px; height:46px; }
+      .controls-main { gap:8px; }
+    }
+    #error { position:absolute; inset:0; display:grid; place-content:center; padding:24px; text-align:center; }
+    #error[hidden] { display:none; }
+    #loading { position:absolute; inset:25% 0 auto; text-align:center; pointer-events:none; }
+    a { color:inherit; }
+  </style>
+</head>
+<body>
+  <div id="player-shell">
+  <header id="player-toolbar">
+    <button id="layout-toggle" type="button" aria-pressed="false">Play landscape</button>
+    <label class="sensitivity" for="turn-speed">Turn speed <input id="turn-speed" type="range" min="0.3" max="1" step="0.05" value="0.6" /><output id="turn-speed-value" for="turn-speed">60%</output></label>
+  </header>
+  <main id="playfield">
+  <div id="dos"></div>
+  <p id="loading" role="status">Loading Doom…</p>
+  <nav id="touch" aria-label="Doom touch controls">
+    <div class="controls-main">
+      <div class="stick-area">
+        <div id="joystick" role="group" tabindex="0" aria-disabled="true" aria-label="Movement joystick. Touch, then drag gently to move and turn, or use arrow keys."><span class="stick-knob"></span></div>
+        <small>drag gently to move + turn</small>
+      </div>
+      <div class="actions"><button class="fire" data-key="341" disabled>Fire</button><button class="use" data-key="32" data-tap disabled>Use</button></div>
+    </div>
+    <div class="utility-row"><button data-key="256" data-tap disabled>Menu</button><button data-key="257" data-tap disabled>Enter</button><button data-key="50" data-tap disabled>Pistol</button><button data-key="51" data-tap disabled>Shotgun</button></div>
+  </nav>
+  </main>
+  <div id="error" hidden><p>The player couldn’t load.</p><a href="https://www.dosgamesarchive.com/play/doom/" target="_blank" rel="noopener">Play the shareware episode on DOS Games Archive ↗</a></div>
+  <noscript>Enable JavaScript to play Doom.</noscript>
+  </div>
+  <script src="https://v8.js-dos.com/latest/js-dos.js" onerror="document.getElementById('loading').hidden=true;document.getElementById('error').hidden=false"></script>
+  <script type="module">
+    import { attachDoomControls } from './controls.js?v=3';
+    const layoutButton = document.getElementById('layout-toggle');
+    const setLandscape = enabled => {
+      document.documentElement.classList.toggle('landscape', enabled);
+      layoutButton.textContent = enabled ? 'Exit landscape' : 'Play landscape';
+      layoutButton.setAttribute('aria-pressed', String(enabled));
+      window.dispatchEvent(new Event('doom-layout-change'));
+    };
+    layoutButton.addEventListener('click', () => {
+      const enabled = !document.documentElement.classList.contains('landscape');
+      setLandscape(enabled);
+      if (window.parent !== window) window.parent.postMessage({ type: 'doom-landscape', enabled }, window.location.origin);
+    });
+    window.addEventListener('message', event => {
+      if (event.origin !== window.location.origin || event.source !== window.parent || event.data?.type !== 'doom-layout') return;
+      setLandscape(event.data.enabled === true);
+    });
+    if (typeof Dos === 'function') {
+      try {
+        const game = Dos(document.getElementById('dos'), {
+          url: '/assets/doom/shareware-v1.jsdos',
+          autoStart: true,
+          theme: 'black',
+          lang: 'en',
+          volume: 0.35,
+          mouseCapture: false,
+          renderAspect: '4/3',
+          autoSave: false,
+          fsChanges: { local: false },
+          thinSidebar: true,
+          kiosk: true,
+          onEvent: (event, ci) => {
+            if (event !== 'ci-ready') return;
+            document.getElementById('loading').hidden = true;
+            const detach = attachDoomControls(document, ci);
+            window.addEventListener('pagehide', detach, { once: true });
+          },
+        });
+        game.setNoCloud(true);
+        document.addEventListener('visibilitychange', () => game.setPaused(document.hidden));
+        window.addEventListener('pagehide', () => game.stop(), { once: true });
+      } catch (error) {
+        document.getElementById('loading').hidden = true;
+        document.getElementById('error').hidden = false;
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+{
+  "name": "thomasisalwayslate.github.io",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "check": "astro check && astro build",
+    "test:doom": "node --test scripts/doom-controls.test.mjs",
+    "build": "astro build",
+    "preview": "astro preview",
+    "og": "python3 scripts/generate-og.py"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "3.7.3",
+    "astro": "7.2.4"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.10",
+    "typescript": "6.0.3"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  }
+}

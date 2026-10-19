@@ -1,0 +1,23 @@
+---
+import HuhuDemo from '../../../components/HuhuDemo.astro';
+import WebAnalytics from '../../../components/WebAnalytics.astro';
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="robots" content="noindex" />
+    <title>huhu graph | thomas</title>
+    <script is:inline>try { document.documentElement.dataset.theme=localStorage.getItem('journalTheme')==='dark'?'dark':'light'; } catch (_) {}</script>
+  </head>
+  <body><main><HuhuDemo fullscreen /></main><WebAnalytics /></body>
+</html>
+<style is:global>
+  :root { color-scheme:light; --paper:#fafafa; --ink:#121212; --muted:#62676b; --line:#d4d8e0; --edge:#acacac; --sans:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif; }
+  :root[data-theme='dark'] { color-scheme:dark; --paper:#121212; --ink:#fafafa; --muted:#acacac; --line:#363636; --edge:#666666; }
+  * { box-sizing:border-box; }
+  html,body,main { margin:0; width:100%; height:100%; overflow:hidden; }
+  body { background:var(--paper); color:var(--ink); font-family:var(--sans); }
+  a { color:inherit; }
+</style>

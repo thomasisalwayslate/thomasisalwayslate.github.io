@@ -1,0 +1,241 @@
+---
+import WebAnalytics from '../components/WebAnalytics.astro';
+const description = 'thomas, software engineer. research notes and experiments.';
+const canonical = new URL('/', Astro.site).href;
+const ogImage = new URL('/assets/og-card-id.png', Astro.site).href;
+---
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content={description}>
+<link rel="canonical" href={canonical}>
+<title>thomas</title>
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="thomas">
+<meta property="og:url" content={canonical}>
+<meta property="og:title" content="thomas">
+<meta property="og:description" content={description}>
+<meta property="og:image" content={ogImage}>
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="thomas, software engineer">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="thomas">
+<meta name="twitter:description" content={description}>
+<meta name="twitter:image" content={ogImage}>
+</head>
+<body>
+<div class="desk" id="desk">
+  <div class="card-scene">
+    <div class="card" id="card">
+      <div class="card-face">
+        <div class="card-left">
+          <div class="identity">
+            <span class="avatar">
+              <img src="/assets/avatar-dither.png" alt="">
+              <img class="swap" src="/assets/avatar-real-dither.png" alt="">
+            </span>
+            <div class="identity-text">
+              <h1>thomas</h1>
+              <div class="subtitle">
+                <span>27 · software engineer</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="bio">
+            <p>i make lots of things: apps, games, small devices and tools. usually something i want to use myself, or an idea i want to see exist.</p>
+            <p>i care about minimalism, privacy and control. i'm also into music, drawing, film photography and 3d.</p>
+          </div>
+
+          <div class="links">
+            <div class="profile-actions">
+              <a class="blog-cta" href="/research">open research</a>
+              <a class="code-link" href="https://github.com/thomasisalwayslate" aria-label="GitHub profile" title="github">
+                <img src="/assets/icon-github-white.png" alt="">
+                <img class="swap" src="/assets/icon-github-ink.png" alt="">
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-photo">
+          <img src="/assets/dither-reflection.png" alt="tokyo through a window, me in the reflection">
+          <img class="swap" src="/assets/dither-reflection-invert.png" alt="">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">&copy; 2026 thomasisalwayslate</div>
+</div>
+
+<script is:inline src="/assets/dither-background.js" defer></script>
+
+<style is:global>
+@font-face {
+  font-family:'Galmuri11';
+  src:url('/assets/fonts/Galmuri11.woff2') format('woff2');
+  font-weight:400;
+  font-style:normal;
+  font-display:swap;
+}
+@font-face {
+  font-family:'Galmuri11';
+  src:url('/assets/fonts/Galmuri11-Bold.woff2') format('woff2');
+  font-weight:700;
+  font-style:normal;
+  font-display:swap;
+}
+body { margin: 0; }
+@keyframes drift { from { background-position: 0 0, 0 0; } to { background-position: 140px 140px, 0 0; } }
+
+.desk {
+  min-height: 100vh;
+  background-color: transparent;
+  background-image: none;
+  animation: none;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:14px;
+  padding:48px 24px 64px;
+  box-sizing:border-box;
+  font-family:'Galmuri11',monospace;
+  color:#fafafa;
+  position:relative;
+  z-index:1;
+}
+.desk.flipped { background-color: transparent; }
+body.flipped { filter:invert(1); }
+
+.card-scene { width:880px; max-width:100%; perspective:1600px; }
+.card { position:relative; background:#121212; border:1px solid #666666; display:flex; flex-direction:column; transform-origin:center; transform-style:preserve-3d; }
+.card-face { display:grid; grid-template-columns:1.05fr 1fr; height:560px; }
+.card-left { padding:48px 44px 44px; display:flex; flex-direction:column; }
+.identity { display:flex; align-items:center; gap:18px; }
+.avatar { position:relative; width:74px; height:74px; flex:none; display:block; }
+.avatar img { width:72px; height:72px; border:1px solid #666666; filter: invert(1) contrast(1.08); image-rendering:pixelated; display:block; }
+.avatar .swap { position:absolute; inset:0; opacity:0; transition:opacity .35s ease; }
+.avatar:hover .swap { opacity:1; }
+.identity-text { display:flex; flex-direction:column; gap:7px; min-width:0; }
+.identity-text h1 { margin:0; font-size:30px; font-weight:700; letter-spacing:0; line-height:1.1; white-space:nowrap; }
+.subtitle { font-family:'Galmuri11',monospace; font-size:11px; line-height:1.5; color:#8f8f8f; }
+.subtitle span { display:block; }
+.subtitle .founder { white-space:nowrap; }
+.bio { margin-top:28px; display:flex; flex-direction:column; }
+.bio p { margin:0; padding:16px 0; border-top:1px solid #363636; font-family:'Galmuri11',monospace; font-size:11px; line-height:1.68; color:#acacac; }
+.bio p + p { padding-bottom:0; }
+.links { container-type:inline-size; margin-top:auto; padding-top:24px; display:flex; flex-direction:column; gap:12px; }
+.links a:not(.blog-cta) { position:relative; width:48px; height:48px; display:flex; align-items:center; justify-content:center; border:1px solid #666666; background:#202020; text-decoration:none; transition:all .2s ease; }
+.links a:hover { background:#fafafa; border-color:#fafafa; }
+.profile-actions { display:grid; grid-template-columns:minmax(0,1fr) 50px; align-items:center; gap:12px; }
+.links img { width:48px; height:48px; image-rendering:pixelated; display:block; }
+.links .swap { position:absolute; inset:0; opacity:0; transition:opacity .2s ease; }
+.links a:hover .swap { opacity:1; }
+.blog-cta { white-space:nowrap; height:48px; display:flex; align-items:center; justify-content:center; padding:0 8px; border:1px solid #666666; background:#202020; text-decoration:none; color:#fafafa; font-family:'Galmuri11',monospace; font-size:11px; letter-spacing:.01em; transition:all .2s ease; }
+.blog-cta:hover { background:#fafafa; border-color:#fafafa; color:#121212; }
+.card-photo { border-left:1px solid #666666; position:relative; overflow:hidden; }
+.card-photo img { display:block; width:100%; height:100%; object-fit:cover; filter: invert(1) contrast(1.08); image-rendering:pixelated; }
+.card-photo .swap { position:absolute; inset:0; opacity:0; transition:opacity .45s ease; }
+.card-photo:hover .swap { opacity:1; }
+.footer { position:absolute; bottom:18px; left:0; right:0; text-align:center; font-family:'Galmuri11',monospace; font-size:10px; color:#666666; }
+
+@media (max-width:700px) {
+  .desk { padding:24px 16px 54px; }
+  .card-face { grid-template-columns:1fr; height:auto; }
+  .card-left { padding:30px 26px 28px; min-height:420px; }
+  .card-photo { display:none; }
+  .identity-text h1 { font-size:25px; }
+  .bio p { font-size:12px; line-height:1.75; }
+}
+@container (max-width:280px) {
+  .profile-actions { grid-template-columns:minmax(0,1fr) 50px; }
+  .profile-actions .blog-cta { grid-column:1; }
+  .profile-actions .code-link { grid-column:2; grid-row:1 / span 2; }
+}
+</style>
+
+<script is:inline>
+(function () {
+  'use strict';
+  var fine = window.matchMedia && window.matchMedia('(pointer:fine)').matches && !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var card = document.getElementById('card');
+  var desk = document.getElementById('desk');
+
+  document.querySelectorAll('.blog-cta').forEach(function (link) { link.addEventListener('click', function () {
+    try { localStorage.setItem('journalTheme', document.body.classList.contains('flipped') ? 'light' : 'dark'); } catch (_) {}
+  }); });
+
+  if (fine && card) {
+    var glare = document.createElement('div');
+    glare.style.cssText = 'position:absolute;inset:0;pointer-events:none;z-index:50;opacity:0';
+    card.appendChild(glare);
+
+    var edges = [];
+    for (var i = 1; i <= 9; i++) {
+      var s = document.createElement('div');
+      s.style.cssText = 'position:absolute;inset:-1px;pointer-events:none;background:#121212;border:1px solid #666666;transform:translateZ(' + (-i * 1.2) + 'px)';
+      card.insertBefore(s, card.firstChild);
+      edges.push(s);
+    }
+
+    var tx=0,ty=0,cx=0,cy=0,vx=0,vy=0,raf=null;
+    var rot=0,rotTarget=0,rv=0,cs=1;
+    var dragging=false,armed=false,pid=null,dragX=0,rotStart=0,moved=0,onBack=false;
+
+    function loop() {
+      vx = vx*.9 + (tx-cx)*.008;
+      vy = vy*.9 + (ty-cy)*.008;
+      cx += vx; cy += vy;
+      if (!dragging) { rv = rv*.9 + (rotTarget-rot)*.014; rot += rv; }
+      var n=((rot%360)+360)%360;
+      var back=n>90&&n<270;
+      if (back!==onBack) {
+        onBack=back;
+        document.body.classList.toggle('flipped',back);
+        desk.classList.toggle('flipped',back);
+        edges.forEach(function(s,i){ s.style.transform='translateZ('+((back?1:-1)*(i+1)*1.2)+'px)'; });
+      }
+      cs += ((dragging?1.02:1)-cs)*.08;
+      card.style.transform='rotateX('+cy.toFixed(2)+'deg) rotateY('+(rot+cx).toFixed(2)+'deg)'+(back?' scaleX(-1)':'')+' scale('+cs.toFixed(4)+')';
+      var fx=(cx/18+.5)*100, fy=(.5-cy/14)*100;
+      var amt=Math.min(1,Math.abs(cx)/18+Math.abs(cy)/14);
+      glare.style.opacity=(amt*.85).toFixed(2);
+      glare.style.background='radial-gradient(560px circle at '+fx.toFixed(1)+'% '+fy.toFixed(1)+'%,rgba(250,250,250,.55) 0%,rgba(172,172,172,.20) 34%,rgba(0,0,0,.20) 100%)';
+      if (dragging||Math.abs(cx-tx)>.02||Math.abs(cy-ty)>.02||Math.abs(vx)>.02||Math.abs(vy)>.02||Math.abs(rot-rotTarget)>.05||Math.abs(rv)>.05||Math.abs(cs-(dragging?1.02:1))>.001) raf=requestAnimationFrame(loop); else raf=null;
+    }
+    function kick(){ if(!raf) raf=requestAnimationFrame(loop); }
+
+    card.addEventListener('mousemove',function(e){ var r=card.getBoundingClientRect(); tx=((e.clientX-r.left)/r.width-.5)*18; ty=-((e.clientY-r.top)/r.height-.5)*14; kick(); });
+    card.addEventListener('mouseleave',function(){ tx=0; ty=0; kick(); });
+    card.addEventListener('pointerdown',function(e){ armed=true; dragging=false; moved=0; dragX=e.clientX; rotStart=rot; pid=e.pointerId; });
+    card.addEventListener('pointermove',function(e){ if(!armed)return; var dx=e.clientX-dragX; if(Math.abs(dx)>moved)moved=Math.abs(dx); if(!dragging&&moved>6){ dragging=true; card.style.userSelect='none'; try{card.setPointerCapture(pid);}catch(err){} } if(!dragging)return; rot=rotStart+dx*.45; kick(); });
+    function endDrag(){ armed=false; if(!dragging)return; dragging=false; card.style.userSelect=''; rotTarget=Math.round(rot/180)*180; rv=0; kick(); }
+    card.addEventListener('pointerup',endDrag);
+    card.addEventListener('pointercancel',endDrag);
+    card.addEventListener('click',function(e){ if(moved>6){ e.preventDefault(); e.stopPropagation(); } },true);
+    card.addEventListener('dragstart',function(e){ e.preventDefault(); });
+  }
+
+  if (fine) {
+    var cv=document.createElement('canvas');
+    cv.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:9999';
+    document.body.appendChild(cv);
+    var ctx=cv.getContext('2d');
+    function resize(){ cv.width=window.innerWidth; cv.height=window.innerHeight; }
+    resize(); window.addEventListener('resize',resize);
+    var parts=[],g=6;
+    window.addEventListener('mousemove',function(e){ parts.push({x:e.clientX+(Math.random()*10-5),y:e.clientY+(Math.random()*10-5),life:1}); if(parts.length>260)parts.splice(0,parts.length-260); });
+    function trailLoop(){ ctx.clearRect(0,0,cv.width,cv.height); for(var i=0;i<parts.length;i++){ var pt=parts[i]; pt.life-=.028; if(pt.life<=0)continue; ctx.globalAlpha=Math.max(0,pt.life)*.8; ctx.fillStyle='#fafafa'; ctx.fillRect(Math.round(pt.x/g)*g,Math.round(pt.y/g)*g,g,g); } parts=parts.filter(function(pt){return pt.life>0;}); ctx.globalAlpha=1; requestAnimationFrame(trailLoop); }
+    requestAnimationFrame(trailLoop);
+  }
+})();
+</script>
+<WebAnalytics />
+</body>
+</html>

@@ -1,0 +1,26 @@
+# agent and tool droppings
+.aider*
+.DS_Store
+*.log
+
+# environments
+.env
+.env.*
+!.env.example
+.venv/
+venv/
+node_modules/
+__pycache__/
+*.py[cod]
+
+# build output
+dist/
+build/
+.next/
+.astro/
+
+# local tooling
+.claude/
+
+# retired writing kept locally
+/archive/

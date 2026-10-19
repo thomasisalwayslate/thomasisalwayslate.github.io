@@ -1,0 +1,58 @@
+---
+import CollectionLayout from '../../layouts/CollectionLayout.astro';
+const notes = [
+  {
+    href: '/research/huhu',
+    title: 'huhu: the paths a life can take',
+    description: 'Keeping thoughts and experiences, following their connections and asking what might become possible next.',
+    date: '2026-10-17',
+    dateLabel: '17 October 2026',
+    cover: '/assets/research/huhu/connections.gif',
+    still: '/assets/research/huhu/connections.png',
+  },
+  {
+    href: '/research/same-answers-lower-cost',
+    title: 'I beat a 300,000-star GitHub repo with 7 tools and a hacked copy of Doom',
+    description: 'On modified Doom: same answers as REA, 52% fewer tokens, 36% cheaper and 27% faster.',
+    date: '2026-10-18',
+    dateLabel: '18 October 2026',
+    cover: '/assets/research/eaos/doom.svg',
+    still: null,
+  },
+].sort((a, b) => b.date.localeCompare(a.date));
+---
+<CollectionLayout title="Research | thomas" description="Research notes and experiments by Thomas." compact research="index">
+  <div class="research-grid">
+    {notes.map(note => <a class="note-card" href={note.href}>
+      <picture class="note-art" aria-hidden="true">
+        {note.still && <source media="(prefers-reduced-motion: reduce)" srcset={note.still} />}
+        <img src={note.cover} width="480" height="170" alt="" decoding="async" />
+      </picture>
+      <div class="note-content">
+        <h2>{note.title}</h2>
+        <p>{note.description}</p>
+        <time datetime={note.date}>{note.dateLabel}</time>
+      </div>
+    </a>)}
+  </div>
+</CollectionLayout>
+<style>
+  .research-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; width:100%; min-width:0; }
+  .note-card { display:flex; flex-direction:column; min-width:0; border:1px solid var(--line); border-radius:10px; overflow:hidden; text-decoration:none; }
+  .note-card:hover { border-color:var(--ink); }
+  .note-art { display:block; flex:none; width:100%; height:82px; border-bottom:1px solid var(--line); overflow:hidden; }
+  .note-art img { width:100%; height:100%; object-fit:contain; image-rendering:pixelated; mix-blend-mode:multiply; }
+  :global(:root[data-theme='dark']) .note-art img { filter:invert(1); mix-blend-mode:screen; }
+  .note-content { display:flex; flex:1; flex-direction:column; padding:14px; font-family:var(--sans); }
+  h2 { font:700 18px/1.3 var(--sans); margin:0 0 12px; overflow-wrap:anywhere; }
+  .note-content p { font-size:13px; line-height:1.6; margin:0 0 16px; }
+  time { margin-top:auto; font-size:11px; line-height:1.5; color:var(--muted); }
+  @media(max-width:600px) {
+    .research-grid { grid-template-columns:minmax(0,1fr); gap:16px; }
+    .note-art { height:100px; }
+    .note-content { padding:18px; }
+    h2 { font-size:21px; }
+    .note-content p { font-size:14px; }
+    time { font-size:12px; }
+  }
+</style>

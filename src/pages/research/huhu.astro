@@ -1,0 +1,277 @@
+---
+import CollectionLayout from '../../layouts/CollectionLayout.astro';
+import HuhuDemo from '../../components/HuhuDemo.astro';
+import { calculateCounterfactual, causalScenarios } from '../../lib/huhu-counterfactual';
+const conversation = causalScenarios.find(scenario => scenario.id === 'conversation')!;
+const example = calculateCounterfactual(conversation, 'conversation')!;
+const changedWeight = example.evidenceMass * example.necessity!;
+const defaultSketchProbability = conversation.background.find(factor => factor.key === 'k')!.probability;
+const probabilityComparison = [0.05, defaultSketchProbability, 0.50, 0.80].map(sketchProbability => ({
+  sketchProbability,
+  necessity: calculateCounterfactual(conversation, 'conversation', { k: sketchProbability })!.necessity!,
+}));
+---
+<CollectionLayout title="huhu: the paths a life can take | thomas" description="Why I am building huhu, an operating system for a human: keeping what happens, following how one part of a life affects another, and learning the chances of things from the record itself." compact research="article">
+  <article class="research-note">
+    <header class="prose">
+      <div class="article-meta"><time datetime="2026-10-15">15 October 2026</time><span>Revised <time datetime="2026-10-17">17 October 2026</time></span></div>
+      <h1>huhu: the paths a life can take</h1>
+      <p class="abstract">Most of what shapes us happens in chains we never see whole. A bad month of sleep, a friend cancelling plans, an old sketch picked up on a free weekend. Each piece is easy to remember. The path between them is not. I’m building huhu to keep those pieces and follow the path.</p>
+      <aside class="name-origin" aria-label="About the name"><p><strong>huhu</strong> <span class="pronunciation" aria-label="pronounced hoo hoo">/huː.huː/</span> means “you-you”: the side of yourself you can step back and explore.</p></aside>
+    </header>
+    <nav class="article-contents prose" aria-label="Article sections">
+      <a href="#where-it-began">The idea</a><a href="#storage-design">How it works</a><a href="#chances">The chance of things</a><a href="#evaluation-plan">What comes next</a>
+    </nav>
+    <section class="prose" id="where-it-began">
+      <h2>Where it began</h2>
+      <p>I think about life through causes and consequences. A life is a web of causes, most of them invisible when they happen. Something small changes the conditions for what comes next, and its effects can land somewhere that seems unrelated.</p>
+      <p>The universe is the larger picture behind that. Everything we’re made of comes out of a long chain of earlier events, through <a href="https://imagine.gsfc.nasa.gov/educators/elements/imagine/01.html">the formation of elements, stars and planets</a>. That made me curious about the smaller chains inside one life.</p>
+      <blockquote>Could I reproduce a little of that connected history at the scale of one life, and explore it?</blockquote>
+      <p>That’s an analogy that drives the question. It doesn’t prove that a life follows the same laws as the universe.</p>
+      <p>It started in Notion. I called it human os: a template of a person, with every experience logged and filed into parts of a life, and links showing where each thing came from. I rebuilt it as a terminal app, renamed it huhu, and gave it a quiet voice that only answers from what I’ve written. Each version changed my mind about what it should be. This is where it stands now.</p>
+    </section>
+    <section class="prose" id="huhu-today">
+      <h2>An operating system for a human</h2>
+      <p>huhu is an operating system for a person, built from the life they record. I write what happens and what I think. huhu keeps my exact words, connects them across time and across parts of my life, and lets me ask how things came about.</p>
+      <p>It runs locally. There’s no telemetry and nothing to perform for anyone. The record belongs to the person who writes it.</p>
+      <p>Today it’s a terminal app on my computer. I write to keep a thought. <code>?</code> asks about my entries, <code>??</code> explores further, and <code>*</code> marks a spark. Most of the time it stays quiet. When it answers, it points back to the entries behind the answer, and it asks questions rather than telling me what something means.</p>
+      <details class="expandable terminal-preview">
+        <summary>See the terminal prototype</summary>
+        <figure>
+          <a href="/assets/research/huhu-terminal.svg" target="_blank" rel="noopener" aria-label="Open the terminal capture at full size">
+            <picture>
+              <source media="(max-width:600px)" srcset="/assets/research/huhu-terminal-mobile.svg" />
+              <img src="/assets/research/huhu-terminal.svg" alt="huhu’s terminal showing a fictional thought, two matching entries with identifiers and dates, and a question ready to send." width="984" height="650" loading="lazy" />
+            </picture>
+          </a>
+          <figcaption>A capture of the running terminal with fictional entries. No generated answer is shown. Open the image to see it at full size.</figcaption>
+        </figure>
+      </details>
+    </section>
+    <section class="prose" id="storage-design">
+      <h2>Entries, sparks and connections</h2>
+      <p>Everything starts with an entry: something I wrote, experienced or kept. Its original wording never changes. huhu keeps when I wrote something down and, when my words say so (“yesterday”, “on tuesday”), when it actually happened. Those often differ, and I can correct the second.</p>
+      <p>A <strong>spark</strong> is a special kind of entry: one that set off a chain reaction. Every spark is an entry, but most entries aren’t sparks. I can mark one when I write it, or notice it later when many things trace back to it.</p>
+      <p>Connections point to exact entries:</p>
+      <dl class="definitions" id="ontology">
+        <div><dt><code>derived_from</code></dt><dd>This entry develops from one or more earlier entries.</dd></div>
+        <div><dt><code>linked_to</code></dt><dd>These entries belong together, without one coming from the other.</dd></div>
+        <div><dt><code>involves</code></dt><dd>This entry concerns a person, place or object.</dd></div>
+      </dl>
+      <p>A connection can be one I made, one a model proposed, or one I confirmed. Those never blur, and I can correct a connection without touching the entry. Together, entries and connections form the <strong>hive</strong>.</p>
+      <details class="expandable" id="entry-table">
+        <summary>The entry table</summary>
+        <div class="note-body">
+          <p>The prototype stores entries locally in SQLite and saves the text before any model looks at it.</p>
+          <table class="field-table"><caption>Fields in the prototype’s entry schema</caption><thead><tr><th scope="col">Field</th><th scope="col">What it keeps</th></tr></thead><tbody>
+            <tr><th scope="row"><code>uuid</code></th><td>A permanent identifier for this exact entry.</td></tr>
+            <tr><th scope="row"><code>body</code></th><td>The original wording.</td></tr>
+            <tr><th scope="row"><code>created_at</code></th><td>When I recorded it, which can differ from when it happened.</td></tr>
+            <tr><th scope="row"><code>source</code></th><td>Where the entry came from, such as a capture or an import.</td></tr>
+            <tr><th scope="row"><code>origin_type</code></th><td>Its role: spark, derived, linked, or unclassified.</td></tr>
+            <tr><th scope="row"><code>spark_uuid</code></th><td>The spark this chain traces back to, when known.</td></tr>
+            <tr><th scope="row"><code>derived_from</code></th><td>The entries this one develops from.</td></tr>
+            <tr><th scope="row"><code>linked_to</code></th><td>Other connected entries.</td></tr>
+          </tbody></table>
+          <p>Connections between entries, people and places are stored separately, each with its own identifier, endpoints and type. A proposed cause is not just another connection: it needs its own supporting entries, alternatives and missing information.</p>
+        </div>
+      </details>
+    </section>
+    <section class="prose" id="lenses">
+      <h2>Seven lenses on a person</h2>
+      <p>My first version split a person into five pillars. Some held up, some didn’t. The version huhu uses now borrows from the way medicine and psychology describe people, as body, mind and social world, and adds what huhu cares about.</p>
+      <table class="lens-table"><caption>An entry can sit under several lenses at once</caption><thead><tr><th scope="col">Lens</th><th scope="col">What it covers</th></tr></thead><tbody>
+        <tr><th scope="row">body</th><td>sleep, energy, health, movement, food</td></tr>
+        <tr><th scope="row">mind</th><td>thinking, feeling, memory, attention</td></tr>
+        <tr><th scope="row">self</th><td>identity, beliefs, spirituality, how I see myself</td></tr>
+        <tr><th scope="row">direction</th><td>goals, values, decisions</td></tr>
+        <tr><th scope="row">others</th><td>relationships, other people’s decisions</td></tr>
+        <tr><th scope="row">surroundings</th><td>places, circumstances, events outside my control</td></tr>
+        <tr><th scope="row">making</th><td>building, creating, output</td></tr>
+      </tbody></table>
+      <p>Lenses are views, not folders. The interesting connections are the ones that cross them: a pain in my foot and a stressful week at work, a song idea and the walk where it started.</p>
+      <p>A model proposes the lenses for each entry and I can correct them. I treat them as something to test, not a truth about people: a blind check compares my own tags with the model’s. If a model and I can’t agree on them, or they never help find anything, they change.</p>
+    </section>
+    <section class="prose" id="linked-lives">
+      <h2>What I didn’t choose</h2>
+      <p>A lot of a life is decided by other people. Someone moves, cancels, invites, leaves. One person’s decision becomes another person’s turning point, and two separate histories have to cross for two people to meet.</p>
+      <p>So every entry in huhu records who made it happen: me, someone else, or circumstances. A model proposes it, and I can correct it. Without that, a record quietly turns a whole life into one person’s choices.</p>
+      <p>huhu only knows someone else’s part through what I write about them. To capture more of it, huhu can ask the same simple question to everyone who switches it on, one a day: “what happened today that you didn’t choose?” or “who changed your plans this week?” Asking everyone the same thing also makes different people’s records comparable. Asking changes what people notice, though, so every question huhu asks is recorded too, answered or not.</p>
+    </section>
+    <section class="prose" id="chances">
+      <h2>The chance of things</h2>
+      <p>This is the part I care about most. I want to be able to ask three kinds of question about my own life:</p>
+      <ol class="question-list">
+        <li><strong>Before:</strong> how likely is this to happen?</li>
+        <li><strong>Because:</strong> what’s the chance this happened because of that?</li>
+        <li><strong>Without:</strong> what’s the chance it wouldn’t have happened without that?</li>
+      </ol>
+      <p>The first is a prediction. huhu writes it down with a timestamp before the outcome is known. For now the predictions are mine; a model’s will be scored the same way. Later, the outcome arrives on its own, as a new entry. Then the prediction gets a score. Over many predictions, I can check whether the things huhu called 70% likely actually happened about seven times in ten. If they didn’t, its numbers don’t deserve trust yet. That’s how probabilities stop being made up.</p>
+      <p>The second and third are about explanation, and they’re different. Something can contribute to an outcome, by speeding it up or changing its direction, even if the outcome would have happened anyway. Whether it would have happened without that event is a harder question. Sometimes the honest answer is a range, or no number at all.</p>
+      <p>This is where my idea of a game of life comes in. In a choice-based game, you can replay the same moment and watch different endings. Real life only runs once. But many people living many lives, recorded through the same lenses and asked the same questions, start to look like many playthroughs. Across them, I could learn how often a kind of situation leads where. That gives a starting guess for one person, and that person’s own record then adjusts it. Many lives give the first estimate, your life corrects it.</p>
+      <details class="expandable" id="causal-calculation">
+        <summary>A worked example of “what if it hadn’t happened?”</summary>
+        <div class="note-body">
+          <p>A fictional chain: a conversation gives me a different route home, I notice a workshop, visit it, and start a device project by 1 October. An older sketch could also have led to the project.</p>
+          <p><strong>Without that conversation, how likely is it that I would not have started the project by 1 October?</strong></p>
+          <p>For this example I supplied six yes-or-no background factors, each something the story doesn’t settle. These probabilities are assumptions, not measurements.</p>
+          <table class="factor-table"><caption>Assumed input probabilities, from 0 to 1</caption><thead><tr><th scope="col">Background factor</th><th scope="col">Probability</th></tr></thead><tbody>
+            {conversation.background.map(factor => <tr><th scope="row"><code>{factor.symbol}</code> · {factor.label}</th><td>{factor.probability.toFixed(2)}</td></tr>)}
+          </tbody></table>
+          <p>Six yes-or-no factors give 2⁶ = 64 combinations. I assumed they’re independent, so each combination’s weight is the product of its factors.</p>
+          <ol class="method-steps">
+            <li>Keep the combinations that reproduce the recorded story: conversation, route, workshop visit, older sketch and project.</li>
+            <li>In each one, remove the conversation, keep everything else fixed, and recalculate what follows.</li>
+            <li>Add up the weight where the project no longer starts in time, and divide by the total weight kept.</li>
+          </ol>
+          <div class="equations" aria-label="The example calculation">
+            <p>Weight where the project no longer starts<br />÷ weight matching the recorded story</p>
+            <strong>{changedWeight.toFixed(4)} ÷ {example.evidenceMass.toFixed(4)} ≈ {example.necessity!.toFixed(2)}</strong>
+          </div>
+          <p>This is a <strong>probability of necessity</strong> under these assumptions. {example.necessity!.toFixed(2)} doesn’t mean the conversation was {Math.round(example.necessity! * 100)}% responsible. It answers whether the project would have been missing without it.</p>
+          <section id="probability-comparison">
+            <h3>What changes when an assumption changes?</h3>
+            <p>Here I change only the assumed chance that the older sketch leads to the project on its own.</p>
+            <table class="comparison-table"><caption>All probabilities from 0 to 1</caption><thead><tr><th scope="col">Assumed chance the sketch leads there alone</th><th scope="col">Chance the project would not start without the conversation</th></tr></thead><tbody>
+              {probabilityComparison.map(row => <tr><th scope="row">{row.sketchProbability.toFixed(2)}{row.sketchProbability === defaultSketchProbability && <small>Current example</small>}</th><td>{row.necessity.toFixed(2)}</td></tr>)}
+            </tbody></table>
+            <p>The calculation follows the assumptions. That’s why the real inputs have to come from scored predictions and many records, not from me.</p>
+          </section>
+          <section id="formal-method">
+            <h3>The formal question</h3>
+            <p><code>PN = P(Y₀=0 | A=1, Y=1, E)</code>. A is the conversation, Y is starting the project by the deadline, Y₀ is that outcome without the conversation, and E is the recorded history. This follows <a href="https://ftp.cs.ucla.edu/pub/stat_ser/r260-reprint.pdf">Pearl’s definition of necessity</a>. R is taking the route, W the workshop visit and K the older sketch; 1 means present.</p>
+            <div class="equations model-equations">{conversation.equations.map(equation => <code>{equation}</code>)}</div>
+            <p><a href="https://ftp.cs.ucla.edu/pub/stat_ser/r271-A.pdf">Tian and Pearl</a> show why observational records alone usually can’t pin this number down exactly. That’s one more reason to report ranges when the evidence is thin.</p>
+          </section>
+        </div>
+      </details>
+      <details class="expandable hive-note" id="life-graph">
+        <summary>Explore the hive</summary>
+        <div class="note-body">
+          <p>Choose a fictional story and imagine it without one event. Switch to “Explore the hive” to follow the connected entries, look through one lens at a time, move them around and rotate the sphere.</p>
+          <p class="example-note">The probabilities here come from rules and assumptions I supplied. They demonstrate the question, not measured causes.</p>
+          <HuhuDemo />
+        </div>
+      </details>
+    </section>
+    <section class="prose" id="evaluation-plan">
+      <h2>What exists, and what I’m testing next</h2>
+      <p>The terminal stores entries, connects them, finds them by meaning and by keyword, and answers from them. I’m still choosing which local language model does the proposing and answering. The hive and the worked example run on fictional stories. It also proposes lenses and who made something happen, which I can correct, asks an optional shared question once a day, and keeps a log of predictions that get scored when the outcome arrives. Model predictions and comparing many people’s records come next.</p>
+      <p>After that, the plan is simple: use it for months and let the record show what’s worth asking. Every prediction will already be on file, so whatever question comes out of it can be tested against what actually happened.</p>
+      <details class="expandable" id="other-directions">
+        <summary>Other directions I want to explore</summary>
+        <div class="note-body">
+          <p>Entries could carry photos, recordings, documents and data from other apps, such as a run exported from Strava, with their sources kept.</p>
+          <p>A name, a feeling or a photo could bring back a forgotten record. That could matter for memory care, including Alzheimer’s disease, but only with clinical partners and careful testing. Finding a record is not the same as remembering.</p>
+          <p>I also want to know whether a model can learn how a person connects ideas, beyond copying their words.</p>
+        </div>
+      </details>
+    </section>
+    <footer class="article-end prose"><a href="/research">Back to research</a><span>By Thomas · Revised 17 October 2026</span></footer>
+  </article>
+</CollectionLayout>
+<script>
+  // Keep links from the graph and older article bookmarks useful inside closed notes.
+  function revealSection(hash = window.location.hash) {
+    if (!hash) return;
+    let id: string;
+    try { id = decodeURIComponent(hash.slice(1)); } catch { return; }
+    const target = document.getElementById(id);
+    if (!target) return;
+    let element: HTMLElement | null = target;
+    while (element) {
+      if (element instanceof HTMLDetailsElement) element.open = true;
+      element = element.parentElement;
+    }
+    requestAnimationFrame(() => target.scrollIntoView({ block: 'start' }));
+  }
+  window.addEventListener('hashchange', () => revealSection());
+  document.addEventListener('click', event => {
+    const anchor = event.target instanceof Element ? event.target.closest('a[href]') : null;
+    if (!(anchor instanceof HTMLAnchorElement)) return;
+    const url = new URL(anchor.href);
+    if (url.origin === location.origin && url.pathname === location.pathname && url.hash) revealSection(url.hash);
+  });
+  revealSection();
+</script>
+<style>
+  .research-note { font:17px/1.75 var(--sans); letter-spacing:normal; }
+  .prose { max-width:660px; margin-inline:auto; }
+  .article-meta { display:flex; flex-wrap:wrap; gap:5px 16px; color:var(--muted); font-size:13px; margin-bottom:20px; }
+  h1 { margin:0 0 24px; font:650 clamp(29px,4vw,38px)/1.2 var(--sans); letter-spacing:-.025em; }
+  .abstract { font-size:19px; line-height:1.65; }
+  p { margin:0 0 20px; }
+  p:last-child { margin-bottom:0; }
+  h2 { font:650 24px/1.3 var(--sans); letter-spacing:-.015em; margin:0 0 18px; }
+  h3 { font:600 20px/1.4 var(--sans); margin:0 0 16px; }
+  section { margin-block:36px; }
+  [id] { scroll-margin-top:24px; }
+  code { font:.88em/1.6 var(--mono); overflow-wrap:anywhere; }
+  .name-origin { margin-block:24px; padding-left:14px; border-left:2px solid var(--line); color:var(--muted); font-size:14px; line-height:1.65; }
+  .name-origin strong { color:var(--ink); }
+  .pronunciation { margin-inline:4px; }
+  .article-contents { display:flex; flex-wrap:wrap; gap:0 22px; margin-top:24px; padding-block:8px; border-block:1px solid var(--line); font-size:14px; }
+  .article-contents a { display:inline-flex; align-items:center; min-height:44px; }
+  blockquote { margin:24px 0; padding:14px 18px; border-left:2px solid var(--ink); font-size:21px; line-height:1.6; }
+  .definitions { margin:20px 0; border-block:1px solid var(--line); font-size:16px; }
+  .definitions div { display:grid; grid-template-columns:130px minmax(0,1fr); gap:16px; padding:12px 0; }
+  .definitions div+div { border-top:1px solid var(--line); }
+  dt { font-weight:600; }
+  dd { margin:0; }
+  .expandable { margin:20px 0; border:1px solid var(--line); border-radius:8px; }
+  summary { min-height:48px; padding:14px 16px; cursor:pointer; font-size:15px; font-weight:600; line-height:1.5; }
+  summary:focus-visible { outline:2px solid var(--ink); outline-offset:3px; }
+  .expandable[open]>summary { border-bottom:1px solid var(--line); }
+  .note-body { padding:20px 16px; font-size:16px; min-width:0; }
+  .note-body>:last-child { margin-bottom:0; }
+  .chain-diagram { margin:24px 0; padding:22px; border:1px solid var(--line); border-radius:10px; }
+  .chain-diagram ol { list-style:none; padding:0; margin:0; }
+  .chain-diagram li { position:relative; padding:12px; border:1px solid var(--edge); border-radius:6px; text-align:center; font-size:15px; line-height:1.5; overflow-wrap:anywhere; }
+  .chain-diagram li+li { margin-top:28px; }
+  .chain-diagram li+li::before { content:'↓'; position:absolute; top:-26px; left:0; right:0; color:var(--muted); }
+  .other-route { margin:18px 0 0; padding-top:16px; border-top:1px dashed var(--edge); text-align:center; font-size:14px; }
+  figcaption { margin-top:14px; text-align:center; font-size:13px; line-height:1.6; color:var(--muted); }
+  table { width:100%; table-layout:fixed; border-collapse:collapse; margin:24px 0; font-size:14px; line-height:1.6; }
+  caption { margin-bottom:12px; text-align:left; font-size:13px; color:var(--muted); }
+  th,td { border-top:1px solid var(--line); padding:12px 10px 12px 0; text-align:left; vertical-align:top; overflow-wrap:anywhere; }
+  tbody th { font-weight:400; }
+  .field-table th:first-child { width:34%; }
+  .factor-table th:first-child,.score-table th:first-child { width:70%; }
+  .factor-table td,.score-table td,.comparison-table td { font-variant-numeric:tabular-nums; }
+  .comparison-table small { display:block; font-size:12px; color:var(--muted); }
+  .method-steps { padding-left:22px; }
+  .method-steps li { margin-bottom:12px; padding-left:3px; }
+  .equations { margin:24px 0; padding:18px 14px; border:1px solid var(--line); border-radius:8px; text-align:center; overflow-wrap:anywhere; }
+  .equations p { font-size:14px; margin-bottom:12px; }
+  .equations strong { font-size:20px; font-weight:600; font-variant-numeric:tabular-nums; }
+  .model-equations { display:flex; flex-direction:column; gap:8px; }
+  .example-note { font-size:14px; color:var(--muted); }
+  .hive-note .note-body { padding:16px 12px; }
+  .terminal-preview figure { margin:0; padding:12px; }
+  .terminal-preview a { display:block; border-radius:6px; overflow:hidden; }
+  .terminal-preview a:focus-visible { outline:2px solid var(--ink); outline-offset:3px; }
+  .terminal-preview img { display:block; width:100%; height:auto; background:#17191c; }
+  .article-end { display:flex; align-items:center; flex-wrap:wrap; justify-content:space-between; gap:8px 20px; border-top:1px solid var(--line); padding-top:20px; font-size:13px; color:var(--muted); }
+  .article-end a { display:inline-flex; align-items:center; min-height:44px; }
+  .lens-table th:first-child { width:30%; font-weight:600; }
+  .question-list { padding-left:22px; margin:0 0 20px; }
+  .question-list li { margin-bottom:8px; }
+  @media(max-width:600px) {
+    .research-note { font-size:16px; }
+    .abstract { font-size:18px; }
+    h2 { font-size:22px; }
+    .article-contents { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:0 14px; }
+    .article-contents a { padding-block:8px; }
+    blockquote { font-size:19px; padding:12px 16px; }
+    .definitions div { grid-template-columns:1fr; gap:4px; }
+    summary { padding:14px 12px; }
+    .note-body { padding:16px 12px; }
+    .chain-diagram { padding:16px 12px; }
+    .hive-note .note-body { padding:16px 8px 8px; }
+    .hive-note .note-body>p { margin-inline:4px; }
+    .equations { padding:16px 10px; }
+    .equations strong { font-size:18px; }
+    .field-table th:first-child { width:40%; }
+    .factor-table th:first-child,.score-table th:first-child { width:62%; }
+  }
+</style>
