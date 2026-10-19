@@ -9,6 +9,8 @@ status: "published"
 
 *On modified Doom: same answers as REA, 52% fewer tokens, 36% cheaper and 27% faster.*
 
+> Measured on version 0.1.0, 18 October 2026. Results for every version are in [BENCHMARKS.md](https://github.com/thomasisalwayslate/every-app-is-open-source/blob/main/BENCHMARKS.md). Current version: [![Current version on PyPI](https://img.shields.io/pypi/v/every-app-is-open-source?style=flat-square&color=121212&label=eaos)](https://pypi.org/project/every-app-is-open-source/)
+
 [REA](https://github.com/morluto/rea), short for Reverse Engineer Anything, has more than 300,000 stars on GitHub. The pitch is great: give your AI agent an app, and it works out how the app is built. I wanted to know one thing. Does it actually help, or would the agent do just as well with plain Ghidra?
 
 So I spent a weekend finding out. Then I built my own version and put all three in the same fight.
