@@ -75,4 +75,4 @@ It downloads and checks Java and Ghidra, builds the Apple Silicon decompiler the
 
 The [full results](https://github.com/thomasisalwayslate/every-app-is-open-source/blob/main/reports/round2/results.md) and [every individual run](https://github.com/thomasisalwayslate/every-app-is-open-source/blob/main/reports/round2/results.json) are in the repo. You can build a fresh modified Doom target using the [public preparation instructions](https://github.com/thomasisalwayslate/every-app-is-open-source/blob/main/docs/BENCHMARK.md); running the full three-tool comparison still requires manual setup described in that guide.
 
-Next up is VS Code: same idea, JavaScript and Electron this time, with its own hidden answer key.
+Next up is Ollama: a much bigger native program, secretly modified again, with its own hidden answer key. I'll publish the result either way, including anything I lose.
