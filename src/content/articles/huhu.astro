@@ -1,5 +1,4 @@
 ---
-import CollectionLayout from '../../layouts/CollectionLayout.astro';
 import HuhuDemo from '../../components/HuhuDemo.astro';
 import { calculateCounterfactual, causalScenarios } from '../../lib/huhu-counterfactual';
 const conversation = causalScenarios.find(scenario => scenario.id === 'conversation')!;
@@ -11,19 +10,13 @@ const probabilityComparison = [0.05, defaultSketchProbability, 0.50, 0.80].map(s
   necessity: calculateCounterfactual(conversation, 'conversation', { k: sketchProbability })!.necessity!,
 }));
 ---
-<CollectionLayout title="huhu: the paths a life can take | thomas" description="Why I am building huhu, an operating system for a human: keeping what happens, following how one part of a life affects another, and learning the chances of things from the record itself." compact research="article">
-  <article class="research-note">
+<div class="research-note">
     <header class="prose">
-      <div class="article-meta"><time datetime="2026-10-15">15 October 2026</time><span>Revised <time datetime="2026-10-17">17 October 2026</time></span></div>
-      <h1>huhu: the paths a life can take</h1>
       <p class="abstract">Most of what shapes us happens in chains we never see whole. A bad month of sleep, a friend cancelling plans, an old sketch picked up on a free weekend. Each piece is easy to remember. The path between them is not. I’m building huhu to keep those pieces and follow the path.</p>
       <aside class="name-origin" aria-label="About the name"><p><strong>huhu</strong> <span class="pronunciation" aria-label="pronounced hoo hoo">/huː.huː/</span> means “you-you”: the side of yourself you can step back and explore.</p></aside>
     </header>
-    <nav class="article-contents prose" aria-label="Article sections">
-      <a href="#where-it-began">The idea</a><a href="#storage-design">How it works</a><a href="#chances">The chance of things</a><a href="#evaluation-plan">What comes next</a>
-    </nav>
     <section class="prose" id="where-it-began">
-      <h2>Where it began</h2>
+      <h2 id="where-it-began-heading">Where it began<a class="heading-anchor" href="#where-it-began-heading" aria-label="Link to Where it began"><span aria-hidden="true">#</span></a></h2>
       <p>I think about life through causes and consequences. A life is a web of causes, most of them invisible when they happen. Something small changes the conditions for what comes next, and its effects can land somewhere that seems unrelated.</p>
       <p>The universe is the larger picture behind that. Everything we’re made of comes out of a long chain of earlier events, through <a href="https://imagine.gsfc.nasa.gov/educators/elements/imagine/01.html">the formation of elements, stars and planets</a>. That made me curious about the smaller chains inside one life.</p>
       <blockquote>Could I reproduce a little of that connected history at the scale of one life, and explore it?</blockquote>
@@ -31,7 +24,7 @@ const probabilityComparison = [0.05, defaultSketchProbability, 0.50, 0.80].map(s
       <p>It started in Notion. I called it human os: a template of a person, with every experience logged and filed into parts of a life, and links showing where each thing came from. I rebuilt it as a terminal app, renamed it huhu, and gave it a quiet voice that only answers from what I’ve written. Each version changed my mind about what it should be. This is where it stands now.</p>
     </section>
     <section class="prose" id="huhu-today">
-      <h2>An operating system for a human</h2>
+      <h2 id="huhu-today-heading">An operating system for a human<a class="heading-anchor" href="#huhu-today-heading" aria-label="Link to An operating system for a human"><span aria-hidden="true">#</span></a></h2>
       <p>huhu is an operating system for a person, built from the life they record. I write what happens and what I think. huhu keeps my exact words, connects them across time and across parts of my life, and lets me ask how things came about.</p>
       <p>It runs locally. There’s no telemetry and nothing to perform for anyone. The record belongs to the person who writes it.</p>
       <p>Today it’s a terminal app on my computer. I write to keep a thought. <code>?</code> asks about my entries, <code>??</code> explores further, and <code>*</code> marks a spark. Most of the time it stays quiet. When it answers, it points back to the entries behind the answer, and it asks questions rather than telling me what something means.</p>
@@ -49,7 +42,7 @@ const probabilityComparison = [0.05, defaultSketchProbability, 0.50, 0.80].map(s
       </details>
     </section>
     <section class="prose" id="storage-design">
-      <h2>Entries, sparks and connections</h2>
+      <h2 id="storage-design-heading">Entries, sparks and connections<a class="heading-anchor" href="#storage-design-heading" aria-label="Link to Entries, sparks and connections"><span aria-hidden="true">#</span></a></h2>
       <p>Everything starts with an entry: something I wrote, experienced or kept. Its original wording never changes. huhu keeps when I wrote something down and, when my words say so (“yesterday”, “on tuesday”), when it actually happened. Those often differ, and I can correct the second.</p>
       <p>A <strong>spark</strong> is a special kind of entry: one that set off a chain reaction. Every spark is an entry, but most entries aren’t sparks. I can mark one when I write it, or notice it later when many things trace back to it.</p>
       <p>Connections point to exact entries:</p>
@@ -78,7 +71,7 @@ const probabilityComparison = [0.05, defaultSketchProbability, 0.50, 0.80].map(s
       </details>
     </section>
     <section class="prose" id="lenses">
-      <h2>Seven lenses on a person</h2>
+      <h2 id="lenses-heading">Seven lenses on a person<a class="heading-anchor" href="#lenses-heading" aria-label="Link to Seven lenses on a person"><span aria-hidden="true">#</span></a></h2>
       <p>My first version split a person into five pillars. Some held up, some didn’t. The version huhu uses now borrows from the way medicine and psychology describe people, as body, mind and social world, and adds what huhu cares about.</p>
       <table class="lens-table"><caption>An entry can sit under several lenses at once</caption><thead><tr><th scope="col">Lens</th><th scope="col">What it covers</th></tr></thead><tbody>
         <tr><th scope="row">body</th><td>sleep, energy, health, movement, food</td></tr>
@@ -93,13 +86,13 @@ const probabilityComparison = [0.05, defaultSketchProbability, 0.50, 0.80].map(s
       <p>A model proposes the lenses for each entry and I can correct them. I treat them as something to test, not a truth about people: a blind check compares my own tags with the model’s. If a model and I can’t agree on them, or they never help find anything, they change.</p>
     </section>
     <section class="prose" id="linked-lives">
-      <h2>What I didn’t choose</h2>
+      <h2 id="linked-lives-heading">What I didn’t choose<a class="heading-anchor" href="#linked-lives-heading" aria-label="Link to What I didn’t choose"><span aria-hidden="true">#</span></a></h2>
       <p>A lot of a life is decided by other people. Someone moves, cancels, invites, leaves. One person’s decision becomes another person’s turning point, and two separate histories have to cross for two people to meet.</p>
       <p>So every entry in huhu records who made it happen: me, someone else, or circumstances. A model proposes it, and I can correct it. Without that, a record quietly turns a whole life into one person’s choices.</p>
       <p>huhu only knows someone else’s part through what I write about them. To capture more of it, huhu can ask the same simple question to everyone who switches it on, one a day: “what happened today that you didn’t choose?” or “who changed your plans this week?” Asking everyone the same thing also makes different people’s records comparable. Asking changes what people notice, though, so every question huhu asks is recorded too, answered or not.</p>
     </section>
     <section class="prose" id="chances">
-      <h2>The chance of things</h2>
+      <h2 id="chances-heading">The chance of things<a class="heading-anchor" href="#chances-heading" aria-label="Link to The chance of things"><span aria-hidden="true">#</span></a></h2>
       <p>This is the part I care about most. I want to be able to ask three kinds of question about my own life:</p>
       <ol class="question-list">
         <li><strong>Before:</strong> how likely is this to happen?</li>
@@ -130,7 +123,7 @@ const probabilityComparison = [0.05, defaultSketchProbability, 0.50, 0.80].map(s
           </div>
           <p>This is a <strong>probability of necessity</strong> under these assumptions. {example.necessity!.toFixed(2)} doesn’t mean the conversation was {Math.round(example.necessity! * 100)}% responsible. It answers whether the project would have been missing without it.</p>
           <section id="probability-comparison">
-            <h3>What changes when an assumption changes?</h3>
+            <h3 id="probability-comparison-heading">What changes when an assumption changes?<a class="heading-anchor" href="#probability-comparison-heading" aria-label="Link to What changes when an assumption changes?"><span aria-hidden="true">#</span></a></h3>
             <p>Here I change only the assumed chance that the older sketch leads to the project on its own.</p>
             <table class="comparison-table"><caption>All probabilities from 0 to 1</caption><thead><tr><th scope="col">Assumed chance the sketch leads there alone</th><th scope="col">Chance the project would not start without the conversation</th></tr></thead><tbody>
               {probabilityComparison.map(row => <tr><th scope="row">{row.sketchProbability.toFixed(2)}{row.sketchProbability === defaultSketchProbability && <small>Current example</small>}</th><td>{row.necessity.toFixed(2)}</td></tr>)}
@@ -138,7 +131,7 @@ const probabilityComparison = [0.05, defaultSketchProbability, 0.50, 0.80].map(s
             <p>The calculation follows the assumptions. That’s why the real inputs have to come from scored predictions and many records, not from me.</p>
           </section>
           <section id="formal-method">
-            <h3>The formal question</h3>
+            <h3 id="formal-method-heading">The formal question<a class="heading-anchor" href="#formal-method-heading" aria-label="Link to The formal question"><span aria-hidden="true">#</span></a></h3>
             <p><code>PN = P(Y₀=0 | A=1, Y=1, E)</code>. A is the conversation, Y is starting the project by the deadline, Y₀ is that outcome without the conversation, and E is the recorded history. This follows <a href="https://ftp.cs.ucla.edu/pub/stat_ser/r260-reprint.pdf">Pearl’s definition of necessity</a>. R is taking the route, W the workshop visit and K the older sketch; 1 means present.</p>
             <div class="equations model-equations">{conversation.equations.map(equation => <code>{equation}</code>)}</div>
             <p><a href="https://ftp.cs.ucla.edu/pub/stat_ser/r271-A.pdf">Tian and Pearl</a> show why observational records alone usually can’t pin this number down exactly. That’s one more reason to report ranges when the evidence is thin.</p>
@@ -155,7 +148,7 @@ const probabilityComparison = [0.05, defaultSketchProbability, 0.50, 0.80].map(s
       </details>
     </section>
     <section class="prose" id="evaluation-plan">
-      <h2>What exists, and what I’m testing next</h2>
+      <h2 id="evaluation-plan-heading">What exists, and what I’m testing next<a class="heading-anchor" href="#evaluation-plan-heading" aria-label="Link to What exists, and what I’m testing next"><span aria-hidden="true">#</span></a></h2>
       <p>The terminal stores entries, connects them, finds them by meaning and by keyword, and answers from them. I’m still choosing which local language model does the proposing and answering. The hive and the worked example run on fictional stories. It also proposes lenses and who made something happen, which I can correct, asks an optional shared question once a day, and keeps a log of predictions that get scored when the outcome arrives. Model predictions and comparing many people’s records come next.</p>
       <p>After that, the plan is simple: use it for months and let the record show what’s worth asking. Every prediction will already be on file, so whatever question comes out of it can be tested against what actually happened.</p>
       <details class="expandable" id="other-directions">
@@ -168,8 +161,8 @@ const probabilityComparison = [0.05, defaultSketchProbability, 0.50, 0.80].map(s
       </details>
     </section>
     <footer class="article-end prose"><a href="/research">Back to research</a><span>By Thomas · Revised 17 October 2026</span></footer>
-  </article>
-</CollectionLayout>
+  </div>
+
 <script>
   // Keep links from the graph and older article bookmarks useful inside closed notes.
   function revealSection(hash = window.location.hash) {

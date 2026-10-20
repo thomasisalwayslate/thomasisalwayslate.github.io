@@ -1,20 +1,23 @@
 #!/usr/bin/env python3
 """Generate Open Graph share cards.
 
-Produces one card per published note, plus the two standing cards for the
+Produces one card per collection article, plus the two standing cards for the
 blog index and the id card page. Run via `npm run og` after adding or
-retitling a post, then commit the results: the deploy action installs only
+retitling a post. Draft cards remain under src/content/articles/drafts/assets,
+outside public/. Commit published cards: the deploy action installs only
 Node, so these are built here rather than in CI.
 """
 
 import re
+import json
+import argparse
 from datetime import date
 from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFont
 
 ROOT = Path(__file__).resolve().parent.parent
-NOTES = ROOT / "src/data/notes"
+ARTICLES = ROOT / "src/content/articles"
 ASSETS = ROOT / "public/assets"
 OUT = ASSETS / "og"
 
@@ -133,47 +136,54 @@ def compose(out, ident, desc, meta, title_img=None, title_text=None):
     print(f"  {out.relative_to(ROOT)}")
 
 
-def parse_note(path):
-    raw = path.read_text()
-    m = re.match(r"^---\n(.*?)\n---\n(.*)$", raw, re.S)
-    if not m:
-        return None
-    fm, body = m.group(1), m.group(2)
-
-    def field(name):
-        hit = re.search(rf"^{name}:\s*(.+?)\s*$", fm, re.M)
-        return hit.group(1).strip().strip('"').strip("'") if hit else ""
-
-    if field("draft").lower() == "true":
-        return None
-    words = len([w for w in body.split() if w.strip()])
+def parse_article(path):
+    if path.suffix == ".json":
+        metadata = json.loads(path.read_text())
+        body = path.with_suffix(".astro").read_text()
+    else:
+        raw = path.read_text()
+        match = re.match(r"^---\n(.*?)\n---\n(.*)$", raw, re.S)
+        if not match:
+            return None
+        frontmatter, body = match.group(1), match.group(2)
+        metadata = {}
+        for name in ("title", "description", "published", "status"):
+            hit = re.search(rf"^{name}:\s*(.+?)\s*$", frontmatter, re.M)
+            metadata[name] = hit.group(1).strip().strip('"').strip("'") if hit else ""
+    body = re.sub(r"<(script|style)[\s\S]*?</\1>", "", body)
+    body = re.sub(r"<[^>]+>", " ", body)
     return {
         "id": path.stem,
-        "title": field("title"),
-        "summary": field("summary"),
-        "date": field("date"),
-        "read": max(1, round(words / 200)),
+        "title": metadata["title"],
+        "summary": metadata["description"],
+        "date": metadata["published"],
+        "draft": metadata.get("status") != "published",
+        "read": max(1, round(len(body.split()) / 200)),
     }
 
 
 def main():
-    print("standing cards:")
-    compose(ASSETS / "og-card.png",
-            ident="thomasisalwayslate / dithered",
-            title_img=ASSETS / "dithered-wordmark-transparent.png",
-            desc="research notes, build logs, experiments",
-            meta="RSS  ·  github.com/thomasisalwayslate  ·  2026")
-    compose(ASSETS / "og-card-id.png",
-            ident="thomasisalwayslate",
-            title_text="thomas",
-            desc="27 · ai engineer",
-            meta="github  ·  linkedin  ·  twitter  ·  dithered")
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--articles-only", action="store_true")
+    args = parser.parse_args()
+    if not args.articles_only:
+        print("standing cards:")
+        compose(ASSETS / "og-card.png",
+                ident="thomasisalwayslate / dithered",
+                title_img=ASSETS / "dithered-wordmark-transparent.png",
+                desc="research notes, build logs, experiments",
+                meta="RSS  ·  github.com/thomasisalwayslate  ·  2026")
+        compose(ASSETS / "og-card-id.png",
+                ident="thomasisalwayslate",
+                title_text="thomas",
+                desc="27 · ai engineer",
+                meta="github  ·  linkedin  ·  twitter  ·  dithered")
 
     print("article cards:")
-    notes = sorted(p for p in NOTES.glob("*.md"))
+    notes = sorted([*ARTICLES.glob("*.md"), *ARTICLES.glob("*.json"), *ARTICLES.glob("drafts/*.md")])
     built = 0
     for path in notes:
-        note = parse_note(path)
+        note = parse_article(path)
         if not note:
             print(f"  skipped {path.stem} (draft)")
             continue
@@ -182,13 +192,14 @@ def main():
             stamp = d.strftime("%d/%m/%Y")
         except ValueError:
             stamp = note["date"]
-        compose(OUT / f"{note['id']}.png",
+        output = ARTICLES / "drafts/assets" / f"{note['id']}-og.png" if note["draft"] else OUT / f"{note['id']}.png"
+        compose(output,
                 ident="thomasisalwayslate / dithered",
                 title_text=note["title"],
                 desc=note["summary"],
                 meta=f"{stamp}  ·  {note['read']} MIN READ  ·  thomasisalwayslate")
         built += 1
-    print(f"\n{built} article card(s), 2 standing card(s)")
+    print(f"\n{built} article card(s); draft cards stay outside public/")
 
 
 if __name__ == "__main__":

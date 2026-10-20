@@ -3,6 +3,10 @@ title: "I beat a 300,000-star GitHub repo with 7 tools and a hacked copy of Doom
 description: "On modified Doom: same answers as REA, 52% fewer tokens, 36% cheaper and 27% faster."
 author: "thomasisalwayslate"
 status: "published"
+sharedArticle: true
+published: "2026-10-18"
+cover: "/assets/research/eaos/doom.svg"
+versionNote: "Measured on version 0.1.0, 18 October 2026."
 ---
 
 # I beat a 300,000-star GitHub repo with 7 tools and a hacked copy of Doom

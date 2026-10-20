@@ -1,0 +1,24 @@
+---
+import { getCollection, render } from 'astro:content';
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import HuhuArticle from '../../content/articles/huhu.astro';
+import DoomEasterEgg from '../../components/DoomEasterEgg.astro';
+import { interactiveHeadings, publishedArticles, type Article } from '../../lib/articles';
+
+export async function getStaticPaths() {
+  const articles = await getCollection('articles', ({ data }) => data.status === 'published' || import.meta.env.DEV);
+  return articles.map(article => ({ params: { slug: article.id }, props: { article } }));
+}
+const { article } = Astro.props as { article: Article };
+const published = await publishedArticles();
+const index = published.findIndex(item => item.id === article.id);
+const previous = index >= 0 ? published[index + 1] : undefined;
+const next = index > 0 ? published[index - 1] : undefined;
+const rendered = article.data.kind === 'interactive' ? undefined : await render(article);
+const Content = rendered?.Content;
+const headings = article.data.kind === 'interactive' ? interactiveHeadings() : (rendered?.headings ?? []).map(heading => ({ ...heading, text: heading.text.replace(/#$/, '') }));
+---
+<ArticleLayout {article} {headings} {previous} {next}>
+  {article.data.kind === 'interactive' ? <HuhuArticle /> : Content && <Content />}
+  {article.id === 'same-answers-lower-cost' && <DoomEasterEgg />}
+</ArticleLayout>

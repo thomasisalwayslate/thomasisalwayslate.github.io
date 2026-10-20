@@ -1,25 +1,15 @@
 ---
 import CollectionLayout from '../../layouts/CollectionLayout.astro';
-const notes = [
-  {
-    href: '/research/huhu',
-    title: 'huhu: the paths a life can take',
-    description: 'Keeping thoughts and experiences, following their connections and asking what might become possible next.',
-    date: '2026-10-17',
-    dateLabel: '17 October 2026',
-    cover: '/assets/research/huhu/connections.gif',
-    still: '/assets/research/huhu/connections.png',
-  },
-  {
-    href: '/research/same-answers-lower-cost',
-    title: 'I beat a 300,000-star GitHub repo with 7 tools and a hacked copy of Doom',
-    description: 'On modified Doom: same answers as REA, 52% fewer tokens, 36% cheaper and 27% faster.',
-    date: '2026-10-18',
-    dateLabel: '18 October 2026',
-    cover: '/assets/research/eaos/doom.svg',
-    still: null,
-  },
-].sort((a, b) => b.date.localeCompare(a.date));
+import { publishedArticles, articleUrl, displayDate } from '../../lib/articles';
+const notes = (await publishedArticles()).map(article => ({
+  href: articleUrl(article),
+  title: article.data.title,
+  description: article.data.summary ?? article.data.description,
+  date: (article.data.updated ?? article.data.published).toISOString(),
+  dateLabel: displayDate(article.data.updated ?? article.data.published),
+  cover: article.data.cover,
+  still: article.data.still,
+}));
 ---
 <CollectionLayout title="Research | thomas" description="Research notes and experiments by Thomas." compact research="index">
   <div class="research-grid">

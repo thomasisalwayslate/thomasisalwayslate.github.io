@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="570" viewBox="0 0 720 570" role="img" aria-labelledby="title description">
+<title id="title">Ollama: cost across three runs per tool</title>
+<desc id="description">Round 1: EAOS 3.10 dollars, GhidraMCP 2.43, REA 3.59. Round 2: EAOS 2.28, GhidraMCP 2.41, REA 3.02. Costs are normalized API equivalents. Different builds and inputs were used between rounds.</desc>
+<rect width="720" height="570" rx="16" fill="#fafafa"/>
+<g font-family="Arial, Helvetica, sans-serif" fill="#24262b">
+<text x="28" y="43" font-size="25" font-weight="700">Ollama: the cost of three runs</text>
+<text x="28" y="72" font-size="17" fill="#606773">API-equivalent USD · lower is cheaper</text>
+<text x="28" y="120" font-size="20" font-weight="700">Round 1</text><text x="135" y="120" font-size="16" fill="#606773">EAOS 0.1.4</text>
+<line x1="165" y1="134" x2="165" y2="275" stroke="#e4e6ea"/>
+<line x1="285" y1="134" x2="285" y2="275" stroke="#e4e6ea"/>
+<line x1="405" y1="134" x2="405" y2="275" stroke="#e4e6ea"/>
+<line x1="525" y1="134" x2="525" y2="275" stroke="#e4e6ea"/>
+<line x1="645" y1="134" x2="645" y2="275" stroke="#e4e6ea"/>
+<text x="28" y="172" font-size="18" font-weight="700">EAOS</text>
+<rect x="165" y="153" width="372.03542" height="28" rx="3" fill="#375faf"/>
+<text x="546.03542" y="173" font-size="17" font-weight="700">$3.10</text>
+<text x="28" y="218" font-size="18" font-weight="400">GhidraMCP</text>
+<rect x="165" y="199" width="291.09302" height="28" rx="3" fill="#6d7582"/>
+<text x="465.09302" y="219" font-size="17" font-weight="400">$2.43</text>
+<text x="28" y="264" font-size="18" font-weight="400">REA + skill</text>
+<rect x="165" y="245" width="430.81027" height="28" rx="3" fill="#9299a4"/>
+<text x="604.81027" y="265" font-size="17" font-weight="400">$3.59</text>
+<text x="28" y="335" font-size="20" font-weight="700">Round 2</text><text x="135" y="335" font-size="16" fill="#606773">EAOS 0.1.5</text>
+<line x1="165" y1="349" x2="165" y2="490" stroke="#e4e6ea"/>
+<text x="165" y="516" text-anchor="middle" font-size="15" fill="#606773">$0</text>
+<line x1="285" y1="349" x2="285" y2="490" stroke="#e4e6ea"/>
+<text x="285" y="516" text-anchor="middle" font-size="15" fill="#606773">$1</text>
+<line x1="405" y1="349" x2="405" y2="490" stroke="#e4e6ea"/>
+<text x="405" y="516" text-anchor="middle" font-size="15" fill="#606773">$2</text>
+<line x1="525" y1="349" x2="525" y2="490" stroke="#e4e6ea"/>
+<text x="525" y="516" text-anchor="middle" font-size="15" fill="#606773">$3</text>
+<line x1="645" y1="349" x2="645" y2="490" stroke="#e4e6ea"/>
+<text x="645" y="516" text-anchor="middle" font-size="15" fill="#606773">$4</text>
+<text x="28" y="387" font-size="18" font-weight="700">EAOS</text>
+<rect x="165" y="368" width="273.24398" height="28" rx="3" fill="#375faf"/>
+<text x="447.24398" y="388" font-size="17" font-weight="700">$2.28</text>
+<text x="28" y="433" font-size="18" font-weight="400">GhidraMCP</text>
+<rect x="165" y="414" width="289.44226" height="28" rx="3" fill="#6d7582"/>
+<text x="463.44226" y="434" font-size="17" font-weight="400">$2.41</text>
+<text x="28" y="479" font-size="18" font-weight="400">REA + skill</text>
+<rect x="165" y="460" width="362.29723" height="28" rx="3" fill="#9299a4"/>
+<text x="536.29723" y="480" font-size="17" font-weight="400">$3.02</text>
+<text x="28" y="551" font-size="15" fill="#606773">Different modified builds and inputs; not a controlled before/after test.</text></g></svg>

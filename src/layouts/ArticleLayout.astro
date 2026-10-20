@@ -1,0 +1,158 @@
+---
+import CollectionLayout from './CollectionLayout.astro';
+import { articleUrl, displayDate, readingMinutes, type Article, type ArticleHeading } from '../lib/articles';
+interface Props {
+  article: Article;
+  headings: ArticleHeading[];
+  previous?: Article;
+  next?: Article;
+}
+const { article, headings, previous, next } = Astro.props;
+const { title, description, published, updated, versionNote, status } = article.data;
+const sections = headings.filter(heading => heading.depth === 2 || heading.depth === 3);
+const minutes = readingMinutes(article);
+// Existing benchmark prose already contains its measured-version note and badge.
+const hasBodyVersionNote = /^> Measured on/m.test(article.body ?? '');
+const image = status === 'draft' ? `/previews/${article.id}.png` : `/assets/og/${article.id}.png`;
+---
+<CollectionLayout title={`${title} | thomas`} description={description} ogImage={image} compact research="article" noindex={status === 'draft'} articleMeta={{ published: published.toISOString(), updated: updated?.toISOString() }}>
+  <div class="reading-grid">
+    <aside class="desktop-contents">
+      <nav aria-label="Article contents">
+        <p>Contents</p>
+        <ol>{sections.map(heading => <li class:list={{ nested: heading.depth === 3 }}><a href={`#${heading.slug}`}>{heading.text}</a></li>)}</ol>
+      </nav>
+    </aside>
+    <article class:list={['article-content', { 'interactive-article': article.data.kind === 'interactive' }]}>
+      <header class="article-header">
+        {status === 'draft' && <p class="draft-note">Private draft · local preview only</p>}
+        <div class="article-meta">
+          <span>{article.data.author}</span>
+          <time datetime={published.toISOString()}>{status === 'draft' ? 'Draft date' : 'Published'} {displayDate(published)}</time>
+          {updated && <span>Updated <time datetime={updated.toISOString()}>{displayDate(updated)}</time></span>}
+          <span>{minutes} min read</span>
+        </div>
+        <h1>{title}</h1>
+        {versionNote && !hasBodyVersionNote && <p class="version-note">{versionNote}</p>}
+      </header>
+      <details class="mobile-contents">
+        <summary>Contents <span>{sections.length} sections</span></summary>
+        <nav aria-label="Article contents"><ol>{sections.map(heading => <li class:list={{ nested: heading.depth === 3 }}><a href={`#${heading.slug}`}>{heading.text}</a></li>)}</ol></nav>
+      </details>
+      <div class="article-body"><slot /></div>
+      <nav class="article-neighbours" aria-label="More articles">
+        {previous ? <a href={articleUrl(previous)} rel="prev"><span>Previous article</span><strong>{previous.data.title}</strong></a> : <span />}
+        {next && <a href={articleUrl(next)} rel="next"><span>Next article</span><strong>{next.data.title}</strong></a>}
+      </nav>
+    </article>
+  </div>
+</CollectionLayout>
+<script>
+  import { addCodeCopyButtons } from '../lib/code-copy';
+  addCodeCopyButtons();
+  // A contents link may point inside a collapsed technical example.
+  function revealArticleHash() {
+    let id: string;
+    try { id = decodeURIComponent(location.hash.slice(1)); } catch { return; }
+    if (!id) return;
+    const target = document.getElementById(id);
+    if (!target) return;
+    let ancestor: HTMLElement | null = target.parentElement;
+    while (ancestor) {
+      if (ancestor instanceof HTMLDetailsElement) ancestor.open = true;
+      ancestor = ancestor.parentElement;
+    }
+    requestAnimationFrame(() => target.scrollIntoView({ block: 'start' }));
+  }
+  addEventListener('hashchange', revealArticleHash);
+  document.querySelectorAll<HTMLAnchorElement>('.mobile-contents a').forEach(link => {
+    link.addEventListener('click', () => {
+      const details = link.closest('details');
+      if (details) details.open = false;
+      if (link.hash === location.hash) revealArticleHash();
+    });
+  });
+  revealArticleHash();
+</script>
+<style is:global>
+  .collection-desk .collection-shell.compact.research-article:has(.reading-grid) { max-width:1120px; }
+  .reading-grid { display:grid; grid-template-columns:180px minmax(0,740px); justify-content:center; align-items:start; gap:32px; }
+  .desktop-contents { position:sticky; top:28px; max-height:calc(100dvh - 56px); overflow-y:auto; font:12px/1.6 var(--sans); color:var(--muted); }
+  .desktop-contents p { margin:0 0 12px; font-weight:600; color:var(--ink); }
+  .desktop-contents ol, .mobile-contents ol { list-style:none; margin:0; padding:0; }
+  .desktop-contents li { margin-bottom:4px; }
+  .desktop-contents a { display:block; padding:5px 0; text-decoration:none; }
+  .desktop-contents a:hover { text-decoration:underline; color:var(--ink); }
+  .desktop-contents .nested, .mobile-contents .nested { padding-left:12px; }
+  .article-content { min-width:0; max-width:740px; font:16px/1.8 var(--sans); overflow-wrap:anywhere; }
+  .article-header { margin-bottom:20px; }
+  .article-header h1 { margin:0 0 24px; font:700 clamp(28px,4.3vw,40px)/1.15 var(--sans); letter-spacing:-.035em; }
+  .article-meta { display:flex; flex-wrap:wrap; gap:6px 16px; margin-bottom:20px; color:var(--muted); font:12px/1.5 var(--mono); }
+  .version-note, .draft-note { margin:0 0 16px; font:12px/1.6 var(--mono); color:var(--muted); }
+  .draft-note { padding:8px 12px; border:1px dashed var(--edge); border-radius:6px; }
+  .article-body p { margin:0 0 20px; }
+  .article-body > p:first-child { font-size:19px; line-height:1.65; }
+  .article-body h2 { margin:40px 0 14px; font:700 24px/1.3 var(--sans); letter-spacing:-.025em; }
+  .article-body h3 { margin:28px 0 12px; font:600 20px/1.4 var(--sans); }
+  .article-body :is(h2,h3)[id] { scroll-margin-top:24px; }
+  .heading-anchor { display:inline-block; margin-left:.45em; padding-inline:4px; color:var(--muted); text-decoration:none; font-size:.7em; font-weight:400; opacity:0; }
+  :is(h2,h3):hover > .heading-anchor, .heading-anchor:focus-visible { opacity:1; }
+  .article-body table { display:block; width:100%; max-width:100%; overflow-x:auto; border-collapse:collapse; margin:24px 0; font-size:12px; line-height:1.6; font-variant-numeric:tabular-nums; }
+  .article-body th, .article-body td { padding:12px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  .article-body th { font-weight:600; }
+  .article-body th:first-child, .article-body td:first-child { min-width:145px; text-align:left; }
+  .article-body th:not(:first-child), .article-body td:not(:first-child) { min-width:95px; }
+  .article-body pre { max-width:100%; overflow-x:auto; padding:16px; border:1px solid var(--line); border-radius:8px; font:14px/1.6 var(--mono); }
+  .code-block { position:relative; min-width:0; margin:24px 0; }
+  .article-body .code-block pre { margin:0; padding-right:60px; }
+  .code-copy { position:absolute; top:8px; right:8px; display:inline-flex; align-items:center; justify-content:center; width:32px; height:32px; padding:8px; border:1px solid transparent; border-radius:6px; background:var(--panel); color:var(--muted); cursor:pointer; }
+  .code-copy:hover { color:var(--ink); border-color:var(--line); }
+  .code-copy:focus-visible { outline:2px solid var(--ink); outline-offset:2px; }
+  .code-copy[data-copied='true'] { color:#1a7f37; }
+  :root[data-theme='dark'] .code-copy[data-copied='true'] { color:#3fb950; }
+  .code-copy::after { content:attr(data-label); position:absolute; top:calc(100% + 6px); right:0; padding:5px 8px; border-radius:6px; background:var(--ink); color:var(--panel); font:12px/1.3 var(--sans); white-space:nowrap; pointer-events:none; opacity:0; z-index:1; }
+  .code-copy:hover::after, .code-copy:focus-visible::after, .code-copy[data-copied='true']::after { opacity:1; }
+  .code-copy:active { transform:translateY(1px); }
+  .code-copy:disabled { cursor:wait; }
+  .copy-status { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; border:0; }
+  @media(pointer:coarse) { .code-copy { top:3px; right:4px; width:44px; height:44px; padding:13px; } }
+  .article-body code { font-family:var(--mono); }
+  .article-body blockquote { margin:24px 0; padding:0 0 0 16px; border-left:2px solid var(--line); }
+  .article-body figure { margin:28px 0; }
+  .article-body figure img { width:100%; height:auto; border-radius:8px; }
+  .article-body figcaption { margin-top:12px; color:var(--muted); font:13px/1.6 var(--sans); }
+  .article-body figure p { margin:0; }
+  .article-body .results-at-a-glance { margin:28px 0; padding:18px; border:1px solid var(--line); border-radius:8px; }
+  .article-body .results-at-a-glance h2 { margin-top:0; }
+  .article-body .results-at-a-glance > :last-child { margin-bottom:0; }
+  .article-neighbours { display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-top:48px; padding-top:24px; border-top:1px solid var(--line); }
+  .article-neighbours a { text-decoration:none; }
+  .article-neighbours a:last-child { text-align:right; }
+  .article-neighbours span { display:block; color:var(--muted); font-size:12px; margin-bottom:6px; }
+  .article-neighbours strong { font-size:14px; font-weight:500; }
+  .article-neighbours a:hover strong { text-decoration:underline; }
+  .mobile-contents { display:none; }
+  .interactive-article .article-header { max-width:660px; margin-inline:auto; }
+  .interactive-article .article-header h1 { font-weight:650; font-size:clamp(29px,4vw,38px); line-height:1.2; letter-spacing:-.025em; }
+  @media(max-width:1050px) {
+    .reading-grid { grid-template-columns:minmax(0,740px); gap:0; }
+    .desktop-contents { display:none; }
+    .mobile-contents { display:block; margin:24px 0 28px; border-block:1px solid var(--line); font:14px/1.6 var(--sans); }
+    .mobile-contents summary { display:flex; justify-content:space-between; gap:16px; align-items:center; min-height:48px; padding:12px 0; cursor:pointer; }
+    .mobile-contents summary::after { content:'+'; }
+    .mobile-contents[open] summary::after { content:'−'; }
+    .mobile-contents summary span { color:var(--muted); font-size:12px; margin-left:auto; }
+    .mobile-contents nav { padding-bottom:12px; }
+    .mobile-contents a { display:block; padding:9px 0; }
+  }
+  @media(max-width:600px) {
+    .article-content { font-size:15px; }
+    .article-header h1 { font-size:29px; }
+    .article-body > p:first-child { font-size:17px; }
+    .article-body h2 { font-size:21px; }
+    .article-body .results-at-a-glance { padding:14px; }
+    .article-neighbours { gap:16px; }
+    .heading-anchor { opacity:1; }
+  }
+  @media(prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } }
+</style>
