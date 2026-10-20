@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="170" viewBox="0 0 240 85" fill="none" shape-rendering="crispEdges">
+  <title>A pixel llama with branching paths of binary inspection</title>
+  <defs>
+    <pattern id="stipple" width="4" height="4" patternUnits="userSpaceOnUse"><path fill="#121212" d="M0 0h1v1H0zm2 2h1v1H2z"/></pattern>
+    <pattern id="shadow" width="2" height="2" patternUnits="userSpaceOnUse"><path fill="#121212" d="M0 0h1v1H0zm1 1h1v1H1z"/></pattern>
+  </defs>
+  <g stroke="#121212" stroke-width=".5">
+    <path d="M40 42H85M151 42H197" stroke-dasharray="1 3"/>
+    <path d="M57 23H76L86 33M57 62H76L86 52M153 33L166 23H186M153 52L166 62H186" stroke-dasharray="1 2"/>
+  </g>
+  <g fill="#121212">
+    <path d="M37 39h6v6h-6zM53 19h7v7h-7zM53 59h7v7h-7zM195 39h6v6h-6zM184 20h6v6h-6zM184 59h6v6h-6z"/>
+    <path d="M101 66h6V35h-3V18h3v-5h5v5h3v9h7V17h3v-6h5v6h3v13h6v5h10v5h3v10h-4v4h-14v13h7v7h-40z"/>
+  </g>
+  <path d="M109 21h3v12h-3zM127 19h3v14h-3zM110 36h24v4h11v4h4v4h-5v3h-13v18h7v2h-34v-3h6z" fill="#fff"/>
+  <path d="M110 36h7v28h-7zM113 58h18v11h-18zM104 68h34v3h-34z" fill="url(#stipple)"/>
+  <path d="M109 21h3v12h-3zM127 19h3v14h-3zM135 47h9v4h-9z" fill="url(#shadow)"/>
+  <path d="M129 37h3v3h-3zM146 43h3v3h-3zM136 50h8v1h-8z" fill="#121212"/>
+</svg>

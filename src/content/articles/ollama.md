@@ -4,7 +4,7 @@ description: "Two modified Ollama builds. A first-round loss, then 5.6% lower co
 author: "thomasisalwayslate"
 status: "published"
 sharedArticle: true
-cover: "/assets/research/ollama/cost-rounds.svg"
+cover: "/assets/research/ollama/llama.svg"
 published: "2026-10-20"
 versionNote: "Measured on EAOS 0.1.4, 19 October 2026, and 0.1.5, 20 October 2026."
 articleType: "benchmark"
