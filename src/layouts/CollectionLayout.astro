@@ -26,15 +26,17 @@ const section = research ? { label:'research', href:'/research' } : { label:'por
     <meta property="og:image" content={new URL(ogImage, Astro.site).href} />
     <meta name="twitter:card" content="summary_large_image" />
     <script is:inline>
-      try { document.documentElement.dataset.theme = localStorage.getItem('journalTheme') === 'dark' ? 'dark' : 'light'; } catch (_) {}
+      document.documentElement.dataset.theme = 'dark';
+      try { document.documentElement.dataset.theme = localStorage.getItem('journalTheme') === 'light' ? 'light' : 'dark'; } catch (_) {}
     </script>
   </head>
-  <body class:list={{'collection-desk':compact, 'detail-desk':backToCollection || research==='article'}}>
-    <div class:list={['collection-shell', {compact, 'square-index':collectionIndex || research==='index', 'collection-index':collectionIndex, 'research-index':research==='index', 'project-page':backToCollection, 'research-article':research==='article'}]}>
+  <body class:list={{'collection-desk':compact, 'detail-desk':backToCollection || research==='article', 'research-desk':Boolean(research), 'blog-desk':research==='index'}}>
+    <div class:list={['collection-shell', {compact, 'square-index':collectionIndex, 'collection-index':collectionIndex, 'research-index':research==='index', 'project-page':backToCollection, 'research-article':research==='article'}]}>
       <header class="site-header">
-        <a class="owner" href={section.href}><img src="/assets/avatar-dither.png" width="32" height="32" alt="" /><span>{section.label}</span></a>
+        <a class="owner" href={research ? '/' : section.href}><img src="/assets/avatar.png" width="32" height="32" alt="" /><span>{research ? 'thomas' : section.label}</span></a>
         <nav aria-label="Site navigation">
           <a href="/">id card</a>
+          {research === 'index' && <a href="/rss.xml">rss</a>}
           <button id="theme-toggle" type="button" aria-label="Switch to dark appearance">
             <svg width="20" height="20" viewBox="0 0 20 20" shape-rendering="crispEdges" fill="currentColor" aria-hidden="true">
               <g class="sun-icon">
@@ -66,6 +68,7 @@ const section = research ? { label:'research', href:'/research' } : { label:'por
         });
       })();
     </script>
+    {research && <script is:inline src="/assets/dither-background.js" defer></script>}
     <WebAnalytics />
   </body>
 </html>
@@ -134,10 +137,31 @@ const section = research ? { label:'research', href:'/research' } : { label:'por
     .compact .owner { gap:6px; }
     .compact.project-page main, .compact.research-article main { padding:16px; }
   }
-  @media(max-width:600px) {
-    body.collection-desk:has(.research-index) { display:flex; flex-direction:column; align-items:center; justify-content:flex-start; gap:24px; padding:20px 12px 24px; }
-    .collection-desk .collection-shell.compact.research-index { aspect-ratio:auto; }
-    .compact.research-index main { display:block; padding:16px; }
-    body.collection-desk:has(.research-index) .identity-footer { position:static; width:100%; margin-top:auto; }
+  /* Reading pages grow with their contents; the square portfolio tray does not. */
+  body.collection-desk.research-desk { display:flex; flex-direction:column; align-items:center; justify-content:flex-start; gap:24px; padding:40px 24px 24px; }
+  body.research-desk { background-image:none; animation:none; }
+  .research-desk #dither-background { opacity:.72; filter:invert(1); }
+  :root[data-theme='dark'] .research-desk #dither-background { filter:none; }
+  .research-desk .collection-shell { background:rgba(250,250,250,.96); }
+  :root[data-theme='dark'] .research-desk .collection-shell { background:rgba(18,18,18,.96); }
+  body.collection-desk.blog-desk { padding:72px 24px 28px; }
+  .collection-desk .collection-shell.compact.research-index { max-width:780px; border:1px solid var(--edge); border-radius:0; }
+  .compact.research-index .site-header { padding:20px 32px; }
+  .compact.research-index .owner { gap:12px; }
+  .compact.research-index .owner img { width:32px; height:32px; object-fit:cover; border-radius:0; }
+  .compact.research-index #theme-toggle { border:0; border-radius:0; background:transparent; }
+  .compact.research-index main { display:block; padding:32px 40px 12px; }
+  .research-desk > .identity-footer { position:relative; z-index:1; width:100%; margin-top:auto; padding-top:8px; }
+  @media(max-width:700px) {
+    body.collection-desk.research-desk { padding:20px 12px 24px; }
+    body.collection-desk.blog-desk { padding:28px 16px 24px; }
+    .compact.research-index .site-header { padding:12px 20px; }
+    .compact.research-index main { padding:28px 24px 4px; }
+  }
+  @media(max-width:380px) {
+    body.collection-desk.blog-desk { padding-inline:12px; }
+    .compact.research-index .site-header { padding-inline:16px; }
+    .compact.research-index main { padding-inline:20px; }
+    .compact.research-index .site-header nav { gap:8px; }
   }
 </style>

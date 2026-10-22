@@ -35,8 +35,7 @@ const ogImage = new URL('/assets/og-card-id.png', Astro.site).href;
         <div class="card-left">
           <div class="identity">
             <span class="avatar">
-              <img src="/assets/avatar-dither.png" alt="">
-              <img class="swap" src="/assets/avatar-real-dither.png" alt="">
+              <img src="/assets/avatar.png" width="72" height="72" alt="">
             </span>
             <div class="identity-text">
               <h1>thomas</h1>
@@ -119,9 +118,7 @@ body.flipped { filter:invert(1); }
 .card-left { padding:48px 44px 44px; display:flex; flex-direction:column; }
 .identity { display:flex; align-items:center; gap:18px; }
 .avatar { position:relative; width:74px; height:74px; flex:none; display:block; }
-.avatar img { width:72px; height:72px; border:1px solid #666666; filter: invert(1) contrast(1.08); image-rendering:pixelated; display:block; }
-.avatar .swap { position:absolute; inset:0; opacity:0; transition:opacity .35s ease; }
-.avatar:hover .swap { opacity:1; }
+.avatar img { width:72px; height:72px; border:1px solid #666666; object-fit:cover; display:block; }
 .identity-text { display:flex; flex-direction:column; gap:7px; min-width:0; }
 .identity-text h1 { margin:0; font-size:30px; font-weight:700; letter-spacing:0; line-height:1.1; white-space:nowrap; }
 .subtitle { font-family:'Galmuri11',monospace; font-size:11px; line-height:1.5; color:#8f8f8f; }

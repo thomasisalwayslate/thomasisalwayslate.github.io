@@ -48,8 +48,7 @@ def frame():
 
 
 def avatar(size):
-    # dithered source is already dark-on-light, which suits the light card
-    av = Image.open(ASSETS / "avatar-dither.png").convert("RGB")
+    av = Image.open(ASSETS / "avatar.png").convert("RGB")
     return av.resize((size, size), Image.LANCZOS).convert("RGBA")
 
 
