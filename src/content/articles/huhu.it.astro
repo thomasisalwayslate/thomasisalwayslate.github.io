@@ -8,158 +8,161 @@ const factors: Record<string, string> = {
   u: 'Prendo quella strada per un altro motivo',
   w: 'Quella strada mi porta al laboratorio',
   q: 'Scopro il laboratorio in un altro modo',
-  d: 'Il laboratorio mi fa iniziare il progetto',
-  k: 'Il vecchio schizzo mi fa iniziare il progetto da solo',
+  d: 'La visita al laboratorio mi spinge a iniziare il progetto',
+  k: 'Il disegno basta a farmi iniziare il progetto',
 };
 const decimal = (value: number, digits = 2) => value.toFixed(digits).replace('.', ',');
 ---
 <HuhuArticleFrame>
     <header class="prose">
-      <p class="abstract">Quasi tutto quello che ci cambia fa parte di una catena di eventi che non vediamo mai per intero. Un mese in cui si dorme male, un amico che annulla un’uscita, un vecchio schizzo ripreso in un fine settimana libero. I singoli episodi sono facili da ricordare. Il percorso che li unisce ci sfugge. Sto costruendo huhu per tenere traccia di quei momenti e seguire il percorso.</p>
-      <aside class="name-origin" aria-label="Sul nome"><p><strong>huhu</strong> <span class="pronunciation" aria-label="si pronuncia hu hu">/huː.huː/</span> vuol dire «tu-tu». È la parte di te che puoi esplorare facendo un passo indietro.</p></aside>
+      <p class="abstract">Molto di quello che ci cambia nasce da catene di eventi che non riusciamo mai a vedere per intero. Un mese in cui dormo male, un amico che disdice un’uscita, un vecchio disegno che riprendo in un fine settimana libero. È facile ricordare i singoli episodi. È più difficile capire come si è passati dall’uno all’altro. Sto costruendo huhu per conservare quei pezzi di vita e ritrovare il filo che li unisce.</p>
+      <aside class="name-origin" aria-label="Origine del nome"><p><strong>huhu</strong> <span class="pronunciation" aria-label="si pronuncia hu hu">/huː.huː/</span> vuol dire «tu-tu». È la parte di te che puoi osservare con un po’ di distanza e imparare a conoscere.</p></aside>
     </header>
     <section class="prose" id="where-it-began">
-      <h2 id="where-it-began-heading">Da dove è partito tutto<a class="heading-anchor" href="#where-it-began-heading" aria-label="Link a Da dove è partito tutto"><span aria-hidden="true">#</span></a></h2>
-      <p>Penso alla vita in termini di cause e conseguenze. Una vita è una rete di cause, e quasi tutte ci sfuggono sul momento. Una piccola cosa cambia le condizioni di quello che succede dopo, e i suoi effetti possono farsi sentire dove meno ce lo aspettiamo.</p>
-      <p>Su scala più grande, penso all’universo. Tutto quello di cui siamo fatti viene da una lunga catena di eventi che ci hanno preceduto, passando per <a href="https://imagine.gsfc.nasa.gov/educators/elements/imagine/01.html">la formazione degli elementi, delle stelle e dei pianeti</a>. Questo mi ha fatto venire voglia di capire le catene più piccole che attraversano una singola vita.</p>
-      <blockquote>Potrei ricostruire un pezzetto di quella storia fatta di legami, alla scala di una sola vita, ed esplorarla?</blockquote>
-      <p>È un’analogia da cui nasce la domanda. Da questa somiglianza, da sola, non posso dedurre che una vita segua le stesse leggi dell’universo.</p>
-      <p>È cominciato in Notion. Lo chiamavo human os. Era un modello per raccontare una persona, in cui ogni esperienza veniva annotata e raccolta per ambiti della vita, con collegamenti che mostravano da dove veniva ogni cosa. L’ho rifatto come app da terminale, l’ho ribattezzato huhu e gli ho dato una voce discreta, che risponde solo a partire da quello che ho scritto. A ogni versione ho cambiato idea su cosa dovesse essere. Oggi sono arrivato qui.</p>
+      <h2 id="where-it-began-heading">Com’è cominciato<a class="heading-anchor" href="#where-it-began-heading" aria-label="Link alla sezione «Com’è cominciato»"><span aria-hidden="true">#</span></a></h2>
+      <p>Quando penso alla vita, mi viene da chiedermi come una cosa ne abbia portata un’altra. Sul momento, gran parte di questi legami ci sfugge. Basta un piccolo episodio a cambiare quello che può succedere dopo. A volte i suoi effetti si fanno sentire molto più avanti, in un ambito che sembra non c’entrare nulla.</p>
+      <p>Su scala molto più grande, penso all’universo. Tutto quello di cui siamo fatti è il risultato di una lunga catena di eventi che comprende <a href="https://imagine.gsfc.nasa.gov/educators/elements/imagine/01.html">la formazione degli elementi, delle stelle e dei pianeti</a>. Da lì mi è venuta la curiosità di seguire catene di eventi più piccole, quelle di una sola vita.</p>
+      <blockquote>Potrei ricostruire un pezzetto della storia di una persona, seguendo i legami tra quello che le è successo?</blockquote>
+      <p>L’universo mi ha dato lo spunto per la domanda. Per dire che una vita segue le stesse leggi servirebbero ben altre prove.</p>
+      <p>Ho cominciato su Notion. All’epoca lo chiamavo human os. Avevo preparato uno schema per raccogliere le esperienze di una persona, suddividerle per ambito e collegarle, così da poter risalire all’origine di ciascuna. Poi l’ho rifatto come app da usare nel terminale, l’ho chiamato huhu e gli ho dato una voce discreta, che risponde solo in base a quello che ho scritto. A ogni versione ho cambiato idea su cosa dovesse diventare. Oggi sono arrivato qui.</p>
     </section>
     <section class="prose" id="huhu-today">
-      <h2 id="huhu-today-heading">Un sistema operativo per una persona<a class="heading-anchor" href="#huhu-today-heading" aria-label="Link a Un sistema operativo per una persona"><span aria-hidden="true">#</span></a></h2>
-      <p>huhu è un sistema operativo per una persona, costruito a partire da quello che annota della propria vita. Scrivo quello che succede e quello che penso. huhu conserva le mie parole così come le ho scritte, le collega nel tempo e tra diversi ambiti della mia vita, e mi permette di chiedere come si è arrivati a un certo punto.</p>
-      <p>Gira sul mio computer. Non raccoglie dati di utilizzo e non c’è niente da mettere in mostra. Le annotazioni appartengono a chi le scrive.</p>
-      <p>Oggi è un’app che uso dal terminale del computer. Scrivo per conservare un pensiero. Con <code>?</code> faccio una domanda sulle mie annotazioni, con <code>??</code> approfondisco e con <code>*</code> segno una scintilla. Per lo più, huhu sta in silenzio. Quando risponde, mi rimanda alle annotazioni su cui si basa e mi fa delle domande, lasciando a me il compito di dare un senso a quello che leggo.</p>
+      <h2 id="huhu-today-heading">Un sistema operativo per una persona<a class="heading-anchor" href="#huhu-today-heading" aria-label="Link alla sezione «Un sistema operativo per una persona»"><span aria-hidden="true">#</span></a></h2>
+      <p>Chiamo huhu un sistema operativo per una persona perché prende forma a partire da quello che quella persona decide di raccontare della propria vita. Io scrivo quello che mi succede e quello che mi passa per la testa. huhu conserva le mie parole così come le ho scritte. Collega appunti scritti a distanza di tempo, anche se riguardano aspetti diversi della mia vita, e mi permette di chiedergli come si è arrivati a un certo risultato.</p>
+      <p>Funziona sul mio computer e non raccoglie dati su come lo uso. Posso scrivere per me, senza dover mostrare niente a nessuno. Gli appunti restano di chi li scrive.</p>
+      <p>Oggi lo uso nel terminale, una finestra di testo in cui scrivo appunti e comandi. Con <code>?</code> faccio una domanda sui miei appunti, con <code>??</code> chiedo di approfondire e con <code>*</code> segno un momento importante, una «scintilla».</p>
+      <p>Di solito huhu sta in silenzio. Per rispondere usa un modello linguistico, un tipo di intelligenza artificiale che lavora con il testo. In inglese si chiama <em>large language model</em>, o LLM. Quando risponde, mi mostra su quali appunti si basa e mi fa domande, così posso trarre le mie conclusioni.</p>
       <details class="expandable terminal-preview">
         <summary>Guarda il prototipo nel terminale</summary>
         <figure>
-          <a href="/assets/research/huhu-terminal.svg" target="_blank" rel="noopener" aria-label="Apri la schermata del terminale a grandezza naturale">
+          <a href="/assets/research/huhu-terminal.svg" target="_blank" rel="noopener" aria-label="Apri la schermata del terminale a dimensioni originali">
             <picture>
               <source media="(max-width:600px)" srcset="/assets/research/huhu-terminal-mobile.svg" />
-              <img src="/assets/research/huhu-terminal.svg" alt="Il terminale di huhu mostra un pensiero inventato, due annotazioni pertinenti con i rispettivi identificativi e le date, e una domanda pronta da inviare." width="984" height="650" loading="lazy" />
+              <img src="/assets/research/huhu-terminal.svg" alt="Nel terminale di huhu si vedono un pensiero inventato, due appunti collegati con i loro codici e le date, e una domanda pronta da inviare." width="984" height="650" loading="lazy" />
             </picture>
           </a>
-          <figcaption>Una schermata del terminale in funzione, in inglese, con annotazioni inventate. La schermata si ferma prima della risposta. Apri l’immagine per vederla a grandezza naturale.</figcaption>
+          <figcaption>Una schermata del programma in funzione, in inglese, con appunti inventati. Si ferma prima della risposta. Tocca o fai clic sull’immagine per ingrandirla.</figcaption>
         </figure>
       </details>
     </section>
     <section class="prose" id="storage-design">
-      <h2 id="storage-design-heading">Annotazioni, scintille e collegamenti<a class="heading-anchor" href="#storage-design-heading" aria-label="Link a Annotazioni, scintille e collegamenti"><span aria-hidden="true">#</span></a></h2>
-      <p>Tutto parte da un’annotazione, da qualcosa che ho scritto, vissuto o conservato. Il testo originale rimane sempre com’è. huhu tiene traccia di quando ho scritto una cosa e, se le mie parole lo indicano («ieri», «martedì»), anche di quando è successa. Spesso i due momenti sono diversi. Posso correggere la data dell’evento.</p>
-      <p>Una <strong>scintilla</strong> è un’annotazione che ha innescato una reazione a catena. La maggior parte delle annotazioni racconta semplicemente qualcosa. Posso segnare una scintilla mentre scrivo, oppure riconoscerla più avanti, quando mi accorgo che tante cose risalgono a quel momento.</p>
-      <p>I collegamenti rimandano ad annotazioni precise.</p>
+      <h2 id="storage-design-heading">Appunti, scintille e collegamenti<a class="heading-anchor" href="#storage-design-heading" aria-label="Link alla sezione «Appunti, scintille e collegamenti»"><span aria-hidden="true">#</span></a></h2>
+      <p>Tutto parte da un appunto su qualcosa che ho pensato, vissuto o voluto conservare. huhu mantiene il testo originale e registra quando l’ho scritto. Se nell’appunto dico «ieri» o «martedì», tiene anche conto di quando è successo il fatto. Spesso le due date sono diverse. Quella del fatto posso correggerla.</p>
+      <p>Chiamo <strong>scintilla</strong> un appunto che racconta un momento da cui sono partite molte altre cose. Posso segnarlo come tale subito, mentre scrivo, oppure riconoscerlo a distanza di tempo, quando mi accorgo di quanti episodi risalgano proprio a quel momento.</p>
+      <p>Ogni collegamento punta a un appunto preciso. Questi sono i nomi che uso nel programma.</p>
       <dl class="definitions" id="ontology">
-        <div><dt><code>derived_from</code></dt><dd>Questa annotazione nasce da una o più annotazioni precedenti.</dd></div>
-        <div><dt><code>linked_to</code></dt><dd>Le annotazioni hanno qualcosa in comune senza che una derivi dall’altra.</dd></div>
-        <div><dt><code>involves</code></dt><dd>Questa annotazione riguarda una persona, un luogo o un oggetto.</dd></div>
+        <div><dt><code>derived_from</code></dt><dd>Quello che racconto qui nasce da uno o più episodi che avevo già annotato.</dd></div>
+        <div><dt><code>linked_to</code></dt><dd>I due appunti hanno qualcosa in comune. Nessuno dei due nasce dall’altro.</dd></div>
+        <div><dt><code>involves</code></dt><dd>L’appunto riguarda una persona, un luogo o un oggetto.</dd></div>
       </dl>
-      <p>Un collegamento può averlo fatto io, può averlo proposto un modello oppure posso averlo confermato io. huhu distingue questi casi, e posso correggere un collegamento senza toccare l’annotazione. Insieme, annotazioni e collegamenti formano l’<strong>alveare</strong>.</p>
+      <p>huhu distingue i collegamenti che aggiungo io, quelli che suggerisce il modello linguistico e quelli che ho controllato e confermato. Posso correggere un collegamento senza modificare gli appunti. L’insieme degli appunti e dei loro collegamenti è quello che chiamo <strong>alveare</strong>.</p>
       <details class="expandable" id="entry-table">
-        <summary>La tabella delle annotazioni</summary>
+        <summary>Come viene salvato un appunto</summary>
         <div class="note-body">
-          <p>Il prototipo conserva le annotazioni sul computer in un database SQLite e salva il testo prima di passarlo a un modello.</p>
-          <table class="field-table"><caption>Campi di un’annotazione nel prototipo</caption><thead><tr><th scope="col">Campo</th><th scope="col">Cosa conserva</th></tr></thead><tbody>
-            <tr><th scope="row"><code>uuid</code></th><td>Un identificativo permanente per questa annotazione.</td></tr>
+          <p>Il prototipo salva gli appunti sul computer, in un archivio SQLite. Il testo originale viene salvato prima che l’intelligenza artificiale lo legga.</p>
+          <table class="field-table"><caption>Informazioni che il prototipo conserva per ogni appunto</caption><thead><tr><th scope="col">Campo</th><th scope="col">Cosa contiene</th></tr></thead><tbody>
+            <tr><th scope="row"><code>uuid</code></th><td>Il codice che identifica questo appunto e resta sempre lo stesso.</td></tr>
             <tr><th scope="row"><code>body</code></th><td>Il testo originale.</td></tr>
-            <tr><th scope="row"><code>created_at</code></th><td>Quando l’ho annotata. L’evento può essere successo in un altro momento.</td></tr>
-            <tr><th scope="row"><code>source</code></th><td>Da dove viene l’annotazione, per esempio da qualcosa che ho salvato al volo o importato.</td></tr>
-            <tr><th scope="row"><code>origin_type</code></th><td>Il suo ruolo. Può essere una scintilla, derivare da un’altra annotazione, esserle collegata o essere ancora da classificare.</td></tr>
+            <tr><th scope="row"><code>created_at</code></th><td>Quando ho salvato l’appunto. Il fatto può essere successo in un altro momento.</td></tr>
+            <tr><th scope="row"><code>source</code></th><td>Da dove viene l’appunto. Per esempio, posso averlo scritto sul momento o averlo importato.</td></tr>
+            <tr><th scope="row"><code>origin_type</code></th><td>Se è una scintilla, se nasce da un altro appunto, se è solo collegato o se è ancora da classificare.</td></tr>
             <tr><th scope="row"><code>spark_uuid</code></th><td>La scintilla da cui parte questa catena, quando la conosco.</td></tr>
-            <tr><th scope="row"><code>derived_from</code></th><td>Le annotazioni da cui deriva questa.</td></tr>
-            <tr><th scope="row"><code>linked_to</code></th><td>Le altre annotazioni collegate.</td></tr>
+            <tr><th scope="row"><code>derived_from</code></th><td>Gli appunti da cui nasce questo.</td></tr>
+            <tr><th scope="row"><code>linked_to</code></th><td>Gli altri appunti collegati.</td></tr>
           </tbody></table>
-          <p>I collegamenti tra annotazioni, persone e luoghi vengono salvati a parte. Ognuno ha un identificativo, due estremi e un tipo. Per ipotizzare una causa serve qualcosa in più. Bisogna indicare quali annotazioni sostengono l’ipotesi, quali altre spiegazioni ci sono e quali informazioni mancano.</p>
+          <p>I collegamenti tra appunti, persone e luoghi vengono salvati a parte. Per ciascuno, huhu conserva un codice, i due elementi che collega e il tipo di legame. Se penso che una cosa ne abbia causata un’altra, mi serve anche sapere quali appunti sostengono l’ipotesi, quali altre spiegazioni sono possibili e cosa ancora non so.</p>
         </div>
       </details>
     </section>
     <section class="prose" id="lenses">
-      <h2 id="lenses-heading">Sette modi di guardare una persona<a class="heading-anchor" href="#lenses-heading" aria-label="Link a Sette modi di guardare una persona"><span aria-hidden="true">#</span></a></h2>
-      <p>Nella prima versione vedevo la persona come un insieme di cinque pilastri. Alcuni reggevano, altri meno. La versione attuale prende spunto da come medicina e psicologia descrivono le persone, guardando al corpo, alla mente e al mondo sociale, e aggiunge gli aspetti che mi interessano per huhu.</p>
-      <table class="lens-table"><caption>Si può leggere la stessa annotazione da più prospettive</caption><thead><tr><th scope="col">Prospettiva</th><th scope="col">Cosa comprende</th></tr></thead><tbody>
+      <h2 id="lenses-heading">Sette aspetti della vita<a class="heading-anchor" href="#lenses-heading" aria-label="Link alla sezione «Sette aspetti della vita»"><span aria-hidden="true">#</span></a></h2>
+      <p>Nella prima versione avevo diviso la vita di una persona in cinque grandi aree. Alcune funzionavano, altre meno. Oggi parto da tre aspetti che si ritrovano in medicina e in psicologia, il corpo, la mente e la vita sociale. A questi ne aggiungo altri che mi aiutano a ritrovare quello che scrivo.</p>
+      <table class="lens-table"><caption>Lo stesso appunto può riguardare più aspetti della vita</caption><thead><tr><th scope="col">Aspetto</th><th scope="col">Cosa comprende</th></tr></thead><tbody>
         <tr><th scope="row">corpo</th><td>sonno, energia, salute, movimento, alimentazione</td></tr>
         <tr><th scope="row">mente</th><td>pensieri, emozioni, memoria, attenzione</td></tr>
         <tr><th scope="row">identità</th><td>chi sono, in cosa credo, spiritualità, come mi vedo</td></tr>
-        <tr><th scope="row">direzione</th><td>obiettivi, valori, decisioni</td></tr>
+        <tr><th scope="row">scelte</th><td>obiettivi, valori, decisioni</td></tr>
         <tr><th scope="row">gli altri</th><td>relazioni, decisioni delle altre persone</td></tr>
         <tr><th scope="row">contesto</th><td>luoghi, circostanze, eventi fuori dal mio controllo</td></tr>
         <tr><th scope="row">creazione</th><td>quello che costruisco, invento e realizzo</td></tr>
       </tbody></table>
-      <p>Sono modi di guardare le stesse cose. I collegamenti più interessanti attraversano più prospettive, come quello tra un dolore al piede e una settimana di stress al lavoro, o tra l’idea per una canzone e la passeggiata in cui è nata.</p>
-      <p>Un modello propone le prospettive da cui leggere ogni annotazione e io posso correggerle. Voglio capire se funzionano davvero. Per verificarlo, assegno le mie etichette senza vedere quelle del modello, poi le confronto. Se il modello e io continuiamo a dare risposte diverse, o se le etichette non ci aiutano a ritrovare niente, le cambio.</p>
+      <p>Sono modi diversi di guardare lo stesso episodio. I legami che mi interessano di più passano da un aspetto all’altro. Penso a un dolore al piede e a una settimana stressante al lavoro, o all’idea per una canzone e alla passeggiata in cui mi è venuta.</p>
+      <p>Il modello linguistico suggerisce a quali aspetti potrebbe appartenere un appunto, e io posso correggere il suggerimento. Per vedere se questi aspetti funzionano, scelgo le mie etichette prima di guardare quelle proposte dall’IA, poi le confronto. Se finiamo spesso per scegliere etichette diverse, o se quelle etichette non mi aiutano a ritrovare gli appunti, le cambio.</p>
     </section>
     <section class="prose" id="linked-lives">
-      <h2 id="linked-lives-heading">Quello che non ho scelto<a class="heading-anchor" href="#linked-lives-heading" aria-label="Link a Quello che non ho scelto"><span aria-hidden="true">#</span></a></h2>
-      <p>Buona parte della nostra vita dipende dagli altri. Qualcuno si trasferisce, disdice, ci invita, se ne va. La decisione di una persona diventa una svolta per un’altra, e perché due persone si incontrino devono incrociarsi due storie diverse.</p>
-      <p>Per questo, ogni annotazione in huhu tiene traccia di chi o cosa ha fatto succedere qualcosa. Potrei essere stato io, qualcun altro, oppure potrebbero essere state le circostanze. Il modello propone una risposta e io posso correggerla. Senza questa distinzione, a leggere le annotazioni sembra che una vita intera dipenda dalle scelte di una sola persona.</p>
-      <p>huhu conosce il ruolo degli altri solo attraverso quello che scrivo su di loro. Per farne emergere di più, può rivolgere la stessa semplice domanda a chi attiva la funzione, una al giorno. «Che cosa è successo oggi che non hai scelto tu?» Oppure «Chi ti ha fatto cambiare programmi questa settimana?» Fare a tutti la stessa domanda rende anche confrontabili le annotazioni di persone diverse. Le domande, però, cambiano quello a cui facciamo caso, quindi huhu registra ogni domanda che fa, anche se rimane senza risposta.</p>
+      <h2 id="linked-lives-heading">Quello che non ho scelto<a class="heading-anchor" href="#linked-lives-heading" aria-label="Link alla sezione «Quello che non ho scelto»"><span aria-hidden="true">#</span></a></h2>
+      <p>Buona parte della nostra vita dipende dagli altri. Qualcuno si trasferisce, annulla un appuntamento, ci invita, se ne va. La scelta di una persona può diventare una svolta per un’altra. Quando due persone si incontrano, a incrociarsi sono due storie diverse.</p>
+      <p>Per ogni appunto, huhu mi aiuta a capire se quello che è successo è dipeso da me, da qualcun altro o dalle circostanze. Il modello linguistico legge l’appunto e propone una risposta, che posso correggere. Senza questa distinzione, a rileggere i miei appunti, sembra che a decidere tutto sia sempre stato io.</p>
+      <p>huhu sa degli altri solo quello che ne scrivo. Per aiutarmi a vedere meglio il loro ruolo, può farmi una domanda al giorno. «Che cosa ti è successo oggi senza che fossi tu a deciderlo?» Oppure «Chi ti ha fatto cambiare programmi questa settimana?» Chi attiva la funzione riceve la stessa domanda. Questo mi permette di confrontare gli appunti di persone diverse. Una domanda può cambiare quello a cui facciamo caso, perciò huhu la registra anche quando nessuno risponde.</p>
     </section>
     <section class="prose" id="chances">
-      <h2 id="chances-heading">Le probabilità che le cose accadano<a class="heading-anchor" href="#chances-heading" aria-label="Link a Le probabilità che le cose accadano"><span aria-hidden="true">#</span></a></h2>
-      <p>È la parte che mi sta più a cuore. Vorrei poter fare tre tipi di domande sulla mia vita.</p>
+      <h2 id="chances-heading">Che probabilità ci sono?<a class="heading-anchor" href="#chances-heading" aria-label="Link alla sezione «Che probabilità ci sono?»"><span aria-hidden="true">#</span></a></h2>
+      <p>Questa è la parte che mi interessa di più. Vorrei poter fare tre tipi di domande su quello che mi succede.</p>
       <ol class="question-list">
         <li><strong>Prima.</strong> Quanto è probabile che succeda?</li>
-        <li><strong>Perché.</strong> Quanto è probabile che sia successo per quel motivo?</li>
-        <li><strong>Senza.</strong> Quanto è probabile che senza quella cosa non sarebbe successo?</li>
+        <li><strong>Perché.</strong> Quanto è probabile che sia successo proprio per quel motivo?</li>
+        <li><strong>E se quell’evento mancasse?</strong> Quanto è probabile che senza di quello non si sarebbe arrivati allo stesso risultato?</li>
       </ol>
-      <p>La prima è una previsione. huhu la registra con data e ora prima che si sappia come andrà. Per ora le previsioni sono mie. Quelle del modello saranno valutate allo stesso modo. Il risultato arriverà per conto suo, in una nuova annotazione. A quel punto si può dare un punteggio alla previsione. Dopo molte previsioni, posso controllare se le cose a cui huhu dava il 70% di probabilità sono successe davvero circa sette volte su dieci. Se i conti non tornano, è ancora presto per fidarsi di quei numeri. È così che le probabilità acquistano un fondamento.</p>
-      <p>La seconda e la terza domanda cercano entrambe una spiegazione, ma chiedono due cose diverse. Un evento può contribuire a un risultato, accelerandolo o cambiando il percorso che ci porta lì, anche se il risultato si sarebbe verificato comunque. Capire se sarebbe successo anche senza quell’evento è più difficile. A volte l’unica risposta onesta è un intervallo, e a volte non c’è un numero da dare.</p>
-      <p>Qui entra in gioco l’idea della vita come gioco. In un gioco in cui le scelte contano, puoi rigiocare lo stesso momento e vedere come va a finire ogni volta. Nella vita reale hai una sola partita. Ma se tante persone vivono le proprie vite, le raccontano da prospettive comuni e rispondono alle stesse domande, è un po’ come osservare tante partite. Guardandole insieme, potrei capire quanto spesso una situazione porta a un certo esito. Quella sarebbe la prima stima. La storia della singola persona permetterebbe poi di aggiustarla. Tante vite danno la prima stima. La tua la corregge.</p>
+      <p>La prima domanda chiede una previsione. huhu la salva con data e ora, prima che si sappia come andrà. Per ora le previsioni le faccio io. Quando le farà il modello linguistico, le valuterò allo stesso modo. Più avanti, quello che succede finisce in un nuovo appunto. A quel punto posso confrontarlo con la previsione e assegnarle un punteggio.</p>
+      <p>Con abbastanza previsioni, posso verificare se gli eventi a cui avevo dato il 70% di probabilità sono successi davvero circa sette volte su dieci. Se non è così, è presto per fidarsi di quelle cifre. In questo modo posso mettere alla prova le probabilità.</p>
+      <p>Le altre due domande cercano una spiegazione. Un evento può accelerare le cose o cambiare il percorso che porta a un risultato, anche quando quel risultato sarebbe arrivato comunque. Capire se l’evento fosse indispensabile è più difficile. A volte posso dare solo un intervallo di probabilità. Altre volte mi mancano gli elementi per dare anche solo un numero.</p>
+      <p>Mi viene in mente un videogioco in cui le scelte cambiano la storia. Puoi tornare allo stesso momento, fare una scelta diversa e vedere come va a finire. Nella vita reale si gioca una volta sola. Se però tante persone raccontano le proprie vite usando gli stessi sette aspetti e rispondendo alle stesse domande, è un po’ come poter osservare tante partite. Da lì potrei capire quanto spesso un certo tipo di situazione porta a un certo risultato. Tante vite mi darebbero una prima stima. I tuoi appunti mi aiuterebbero ad adattarla alla tua.</p>
       <details class="expandable" id="causal-calculation">
-        <summary>Un esempio con i conti: «E se non fosse successo?»</summary>
+        <summary>Un esempio di calcolo. E se non fosse successo?</summary>
         <div class="note-body">
-          <p>Una catena inventata. Dopo una conversazione cambio strada per tornare a casa, noto un laboratorio, ci torno per visitarlo e avvio il progetto di un dispositivo entro il 1º ottobre. Avevo anche un vecchio schizzo che avrebbe potuto farmi iniziare lo stesso progetto.</p>
+          <p>Immaginiamo questa storia. Una conversazione mi fa cambiare strada per tornare a casa. Lungo il tragitto vedo un laboratorio. Ci torno per visitarlo e, entro il 1º ottobre, avvio il progetto di un dispositivo. Avevo già fatto un disegno per quel dispositivo, e quel disegno avrebbe potuto bastare a farmi iniziare il progetto.</p>
           <p><strong>Senza quella conversazione, quanto è probabile che non avrei iniziato il progetto entro il 1º ottobre?</strong></p>
-          <p>Per l’esempio ho scelto sei fattori che possono valere sì o no. La storia lascia aperta ciascuna di queste possibilità. Ho ipotizzato le probabilità per fare il calcolo.</p>
-          <table class="factor-table"><caption>Probabilità di partenza ipotizzate, da 0 a 1</caption><thead><tr><th scope="col">Fattore</th><th scope="col">Probabilità</th></tr></thead><tbody>
+          <p>Per fare il calcolo, parto da sei domande a cui la storia non risponde. Ognuna ammette un sì o un no. Per esempio, avrei trovato il laboratorio anche per un’altra strada? Le probabilità della tabella le ho scelte io per l’esempio.</p>
+          <table class="factor-table"><caption>Probabilità scelte per l’esempio, da 0 a 1</caption><thead><tr><th scope="col">Possibilità</th><th scope="col">Probabilità</th></tr></thead><tbody>
             {conversation.background.map(factor => <tr><th scope="row"><code>{factor.symbol}</code> · {factors[factor.key]}</th><td>{decimal(factor.probability)}</td></tr>)}
           </tbody></table>
-          <p>Sei fattori che possono valere sì o no danno 2⁶ = 64 combinazioni. Ho assunto che i fattori siano indipendenti, quindi il peso di una combinazione è il prodotto delle probabilità dei valori che assume ciascun fattore.</p>
+          <p>Sei domande con due risposte ciascuna danno 2⁶ = 64 combinazioni. Per l’esempio, assumo che le risposte siano indipendenti. Il peso di ogni combinazione si ottiene quindi moltiplicando le probabilità delle sei risposte che la compongono.</p>
           <ol class="method-steps">
-            <li>Tengo le combinazioni che riproducono la storia annotata, con la conversazione, il percorso, la visita al laboratorio, il vecchio schizzo e il progetto.</li>
-            <li>In ciascuna tolgo la conversazione, tengo fisso tutto il resto e ricalcolo quello che succede.</li>
-            <li>Sommo i pesi dei casi in cui il progetto non parte in tempo e divido per il peso totale delle combinazioni che avevo tenuto.</li>
+            <li>Parto dalle combinazioni compatibili con i fatti della storia. Ci sono stati la conversazione, il nuovo tragitto, la visita, il disegno fatto in precedenza e l’avvio del progetto.</li>
+            <li>Per ciascuna combinazione, immagino che la conversazione non ci sia stata. Lascio invariate le sei risposte e ricalcolo che cosa succede dopo.</li>
+            <li>Sommo i pesi dei casi in cui il progetto non parte in tempo. Divido questa somma per il peso totale delle combinazioni che avevo tenuto.</li>
           </ol>
           <div class="equations" aria-label="Il calcolo dell’esempio">
-            <p>Peso dei casi in cui il progetto non parte<br />÷ peso dei casi che riproducono la storia annotata</p>
+            <p>Peso dei casi in cui il progetto non parte in tempo<br />÷ peso dei casi compatibili con la storia di partenza</p>
             <strong>{decimal(changedWeight, 4)} ÷ {decimal(example.evidenceMass, 4)} ≈ {decimal(example.necessity!)}</strong>
           </div>
-          <p>Con queste ipotesi, ottengo una <strong>probabilità di necessità</strong>. Quel {decimal(example.necessity!)} mi dice quanto è probabile che il progetto non sarebbe partito senza la conversazione. Dire che la conversazione è stata responsabile del {Math.round(example.necessity! * 100)}% del risultato sarebbe un’altra cosa.</p>
+          <p>Con le ipotesi che ho scelto, c’è circa il {Math.round(example.necessity! * 100)}% di probabilità che, senza quella conversazione, il progetto non sarebbe partito in tempo. È quella che si chiama <strong>probabilità di necessità</strong>. Quanto la conversazione abbia contribuito al progetto è una domanda diversa.</p>
           <section id="probability-comparison">
-            <h3 id="probability-comparison-heading">Che cosa cambia se cambio un’ipotesi?<a class="heading-anchor" href="#probability-comparison-heading" aria-label="Link a Che cosa cambia se cambio un’ipotesi?"><span aria-hidden="true">#</span></a></h3>
-            <p>Qui cambio una sola cosa, la probabilità che il vecchio schizzo basti da solo a far partire il progetto.</p>
-            <table class="comparison-table"><caption>Tutte le probabilità vanno da 0 a 1</caption><thead><tr><th scope="col">Probabilità ipotizzata che basti lo schizzo</th><th scope="col">Probabilità che il progetto non parta senza la conversazione</th></tr></thead><tbody>
+            <h3 id="probability-comparison-heading">E se cambiassi un’ipotesi?<a class="heading-anchor" href="#probability-comparison-heading" aria-label="Link alla sezione «E se cambiassi un’ipotesi?»"><span aria-hidden="true">#</span></a></h3>
+            <p>Lascio uguali tutte le altre probabilità e cambio solo quella che il disegno basti a farmi iniziare il progetto.</p>
+            <table class="comparison-table"><caption>Tutte le probabilità vanno da 0 a 1</caption><thead><tr><th scope="col">Probabilità ipotizzata che basti il disegno</th><th scope="col">Probabilità che il progetto non parta in tempo senza la conversazione</th></tr></thead><tbody>
               {probabilityComparison.map(row => <tr><th scope="row">{decimal(row.sketchProbability)}{row.sketchProbability === defaultSketchProbability && <small>Valore dell’esempio</small>}</th><td>{decimal(row.necessity)}</td></tr>)}
             </tbody></table>
-            <p>Il risultato dipende dalle ipotesi. Per questo, nella pratica, i valori di partenza dovranno venire da previsioni valutate e da molte storie documentate.</p>
+            <p>Il risultato cambia con le ipotesi. Per fare il conto su casi reali, dovrei ricavare i numeri di partenza da molte storie documentate e da previsioni già confrontate con quello che è successo.</p>
           </section>
           <section id="formal-method">
             <h3 id="formal-method-heading">La domanda formale<a class="heading-anchor" href="#formal-method-heading" aria-label="Link alla domanda formale"><span aria-hidden="true">#</span></a></h3>
-            <p><code>PN = P(Y₀=0 | A=1, Y=1, E)</code>. A indica la conversazione, Y l’avvio del progetto entro la scadenza, Y₀ lo stesso esito in assenza della conversazione ed E la storia annotata. Il calcolo segue <a href="https://ftp.cs.ucla.edu/pub/stat_ser/r260-reprint.pdf">la definizione di necessità di Pearl</a>. R indica il percorso, W la visita al laboratorio e K il vecchio schizzo. Il valore 1 indica che l’elemento è presente.</p>
+            <p><code>PN = P(Y₀=0 | A=1, Y=1, E)</code>. A indica se c’è stata la conversazione, Y se il progetto è partito entro la scadenza e Y₀ se sarebbe partito in tempo senza la conversazione. E è la storia così come l’ho annotata. Il calcolo segue <a href="https://ftp.cs.ucla.edu/pub/stat_ser/r260-reprint.pdf">la definizione di necessità di Pearl</a>. Nelle formule qui sotto R è il nuovo tragitto, W la visita al laboratorio e K il disegno fatto in precedenza. Il valore 1 significa «sì», <code>AND</code> vuol dire «e» e <code>OR</code> vuol dire «o».</p>
             <div class="equations model-equations">{conversation.equations.map(equation => <code>{equation}</code>)}</div>
-            <p><a href="https://ftp.cs.ucla.edu/pub/stat_ser/r271-A.pdf">Tian e Pearl</a> mostrano perché, di solito, le sole osservazioni non bastano a determinare quel numero con esattezza. È un motivo in più per dare un intervallo quando abbiamo pochi elementi.</p>
+            <p><a href="https://ftp.cs.ucla.edu/pub/stat_ser/r271-A.pdf">Tian e Pearl</a> mostrano perché, in genere, osservare quello che è successo non basta per ottenere un numero esatto. Quando abbiamo pochi elementi, un intervallo può essere più onesto.</p>
           </section>
         </div>
       </details>
       <details class="expandable hive-note" id="life-graph">
         <summary>Esplora l’alveare</summary>
         <div class="note-body">
-          <p>Scegli una storia inventata e immagina come sarebbe andata senza uno degli eventi. Passa a «Esplora l’alveare» per seguire i collegamenti tra le annotazioni, osservarle da una prospettiva alla volta, spostarle e ruotare la sfera.</p>
-          <p class="example-note">Le probabilità qui dipendono da regole e ipotesi che ho scelto io. Servono a illustrare la domanda. Per misurare cause reali servirebbero dei dati.</p>
+          <p>Scegli una storia inventata e prova a vedere come sarebbe potuta andare senza il primo evento. Con «Esplora l’alveare» puoi seguire i collegamenti tra gli appunti, mettere in risalto un aspetto alla volta, spostare i punti e ruotare la sfera.</p>
+          <p class="example-note">Tutti i numeri dipendono dalle regole e dalle ipotesi che ho scelto. Servono a far vedere come funziona il calcolo.</p>
           <HuhuDemo lang="it" />
         </div>
       </details>
     </section>
     <section class="prose" id="evaluation-plan">
-      <h2 id="evaluation-plan-heading">Cosa funziona già e cosa voglio provare<a class="heading-anchor" href="#evaluation-plan-heading" aria-label="Link a Cosa funziona già e cosa voglio provare"><span aria-hidden="true">#</span></a></h2>
-      <p>L’app da terminale salva le annotazioni, le collega, le ritrova per significato e per parola chiave e le usa per rispondere alle domande. Sto ancora decidendo quale modello linguistico far girare sul computer per formulare proposte e risposte. L’alveare e l’esempio con i conti usano storie inventate. L’app propone anche da quali prospettive leggere un’annotazione e chi ha fatto succedere una cosa. Posso correggere entrambe le proposte. Una volta al giorno può fare una domanda comune a chi attiva la funzione, e tiene un registro delle previsioni che vengono valutate quando si sa com’è andata. I prossimi passi sono far fare previsioni al modello e confrontare le annotazioni di più persone.</p>
-      <p>Dopo, il piano è semplice. Usarlo per mesi e lasciare che siano le annotazioni a mostrarmi quali domande vale la pena fare. Ogni previsione sarà già registrata, così potrò confrontare le ipotesi che ne verranno fuori con quello che è accaduto davvero.</p>
+      <h2 id="evaluation-plan-heading">Cosa funziona già e cosa voglio provare<a class="heading-anchor" href="#evaluation-plan-heading" aria-label="Link alla sezione «Cosa funziona già e cosa voglio provare»"><span aria-hidden="true">#</span></a></h2>
+      <p>L’app nel terminale salva gli appunti, li collega e li ritrova sia cercando parole chiave sia cercando per significato. Li usa per rispondere alle domande. Sto ancora scegliendo quale modello linguistico usare sul computer per dare queste risposte e fare i suggerimenti. Qui sul sito, l’alveare e l’esempio di calcolo usano storie inventate.</p>
+      <p>L’app mi suggerisce anche quali aspetti della vita riguarda un appunto e a chi o a cosa è dovuto l’episodio. Posso correggere entrambi i suggerimenti. Chi lo desidera può ricevere la domanda del giorno. L’app conserva le previsioni e permette di valutarle quando si sa com’è andata.</p>
+      <p>I prossimi passi sono vedere come se la cava il modello linguistico con le previsioni e confrontare gli appunti di più persone. Poi voglio usare huhu per mesi e vedere quali domande emergono dai miei appunti. Le previsioni saranno già registrate, così potrò verificarle confrontandole con quello che succede davvero.</p>
       <details class="expandable" id="other-directions">
-        <summary>Altre direzioni che vorrei esplorare</summary>
+        <summary>Altre cose che vorrei provare</summary>
         <div class="note-body">
-          <p>Le annotazioni potrebbero contenere foto, registrazioni, documenti e dati di altre app, come una corsa esportata da Strava, conservando l’indicazione della fonte.</p>
-          <p>Un nome, una sensazione o una foto potrebbero far riemergere un’annotazione dimenticata. Potrebbe avere un ruolo nell’assistenza a chi ha difficoltà di memoria, anche nel caso dell’Alzheimer, ma servirebbero partner clinici e verifiche attente. Ritrovare un’annotazione è una cosa, ricordare è un’altra.</p>
-          <p>Voglio anche capire se un modello può imparare come una persona collega le idee, al di là di come usa le parole.</p>
+          <p>Un appunto potrebbe contenere anche foto, registrazioni, documenti o dati di altre app, come una corsa esportata da Strava. huhu terrebbe traccia della loro provenienza.</p>
+          <p>Un nome, una sensazione o una foto potrebbero aiutarmi a ritrovare un appunto dimenticato. Mi chiedo se potrebbe servire anche a chi ha difficoltà di memoria, per esempio a chi convive con l’Alzheimer. Per capirlo servirebbero studi accurati e la collaborazione di chi si occupa di queste persone. Ritrovare un appunto e ricordare un’esperienza sono due cose diverse.</p>
+          <p>Voglio anche capire se un modello linguistico può imparare a riconoscere come una persona collega le idee, andando oltre le parole che usa.</p>
         </div>
       </details>
     </section>

@@ -3,10 +3,10 @@ import type { LifeEntry } from './huhu-demo';
 type EntryCopy = [title: string, text: string];
 
 const coreEntries: Record<string, EntryCopy> = {
-  'old-sketch': ['Un vecchio schizzo del dispositivo', 'Ho disegnato un piccolo dispositivo per conservare le idee. Devo ancora decidere se costruirlo.'],
+  'old-sketch': ['Un vecchio disegno del dispositivo', 'Ho disegnato un piccolo dispositivo per conservare le idee. Devo ancora decidere se costruirlo.'],
   conversation: ['Una conversazione sul canale', 'Sam mi ha parlato di una strada più tranquilla lungo il canale. Voglio provarla tornando a casa.'],
   'new-route': ['Provo la strada lungo il canale', 'Ho provato la strada che mi ha suggerito Sam. Vicino al ponte ho notato un laboratorio aperto e mi sono segnato l’indirizzo.'],
-  workshop: ['Una visita al laboratorio', 'Sono tornato al laboratorio che avevo notato lungo il canale. Tenere in mano un piccolo involucro mi ha fatto riprendere lo schizzo del dispositivo.'],
+  workshop: ['Una visita al laboratorio', 'Sono tornato al laboratorio che avevo notato lungo il canale. Ho preso in mano un piccolo involucro e mi è venuta voglia di riprendere il disegno del dispositivo.'],
   'device-decision': ['Avvio il progetto del dispositivo', 'Ho deciso di costruire il dispositivo che avevo disegnato ad agosto. La visita al laboratorio mi ha aiutato a immaginare come sarebbe stato tenerlo in mano.'],
   sleep: ['Una notte breve', 'Ho dormito quattro ore. Sono rimasto sveglio per finire un disegno.'],
   run: ['La corsa di martedì', 'Una corsa di 32 minuti. I dati dell’attività contengono il percorso e le misurazioni della velocità nel tempo.'],
@@ -46,9 +46,9 @@ const themeNotes: Record<string, EntryCopy[]> = {
     ['Qualcosa da conservare', 'Ho salvato una frase della nostra conversazione perché volevo tornarci.'],
   ],
   ideas: [
-    ['Uno schizzo a margine', 'Una forma disegnata a margine mi ha dato l’idea per una piccola interfaccia.'],
+    ['Un disegno a margine', 'Una forma disegnata a margine mi ha dato l’idea per una piccola interfaccia.'],
     ['Un colore da conservare', 'Ho notato un verde pallido su una porta e ho scritto perché mi aveva colpito.'],
-    ['Un’idea lasciata a metà', 'Ho ripreso un vecchio schizzo. Questa volta mi è tornata utile la parte che avevo cancellato.'],
+    ['Un’idea lasciata a metà', 'Ho ripreso un vecchio disegno. Questa volta mi è tornata utile la parte che avevo cancellato.'],
     ['Quattro colori', 'Ho provato a fare il disegno con solo quattro colori. Usarne così pochi ha cambiato quello a cui facevo caso.'],
     ['Una piccola raccolta', 'Volevo che i pezzi salvati mi sembrassero oggetti da passare in rassegna.'],
     ['Guardare di nuovo', 'Una foto a cui la settimana scorsa non avevo fatto caso oggi mi ha dato un’idea.'],
@@ -58,7 +58,7 @@ const themeNotes: Record<string, EntryCopy[]> = {
     ['Un disegno fino a tardi', 'Sono rimasto sveglio per lavorare al disegno. Ho annotato a che ora ho finito, lasciando aperta la domanda su che effetto abbia avuto.'],
     ['A letto prima', 'Ho lasciato il lavoro a metà sulla scrivania e sono andato a letto prima del solito.'],
     ['Una nota al mattino', 'Ho scritto quello che ricordavo della notte e come mi sentivo al risveglio.'],
-    ['Il giorno dopo', 'La mattina è andata a rilento. L’annotazione di ieri poteva aiutarmi a capire, anche se ancora non sapevo come.'],
+    ['Il giorno dopo', 'La mattina è andata a rilento. Forse l’appunto di ieri poteva aiutarmi a capire perché.'],
     ['Due orari distinti', 'Ho aggiunto l’ora in cui mi sono accorto della stanchezza, separata dall’ora in cui ne ho scritto.'],
   ],
   work: [
@@ -86,12 +86,12 @@ const themeNotes: Record<string, EntryCopy[]> = {
     ['Un angolo familiare', 'Ho riconosciuto l’angolo prima di ricordare il giorno in cui c’ero stato l’ultima volta.'],
   ],
   reflection: [
-    ['Un possibile collegamento', 'Due annotazioni sembravano collegate. Ho conservato il collegamento proposto e il motivo.'],
+    ['Un possibile collegamento', 'Due appunti sembravano collegati. Ho conservato il collegamento suggerito e la ragione per cui aveva senso.'],
     ['Un’altra spiegazione', 'Una nota precedente ha cambiato il modo in cui capivo quella successiva.'],
-    ['Ancora troppo poco', 'C’erano troppo poche annotazioni per dire che fosse uno schema ricorrente. Ho lasciato aperta la domanda.'],
-    ['Seguire il filo', 'Ho seguito un pensiero a ritroso attraverso due annotazioni e ne ho ritrovato il contesto originale.'],
-    ['Quello che avevo scritto davvero', 'Prima di accettare il riassunto ho controllato l’annotazione originale.'],
-    ['Un legame da rivedere', 'Ho lasciato esplicita l’incertezza, così una nuova annotazione avrebbe potuto cambiare la spiegazione.'],
+    ['Ancora troppo poco', 'Avevo troppi pochi appunti per dire che succedesse spesso. Ho lasciato aperta la domanda.'],
+    ['Seguire il filo', 'Sono risalito da un pensiero a due appunti precedenti e ho ritrovato le circostanze in cui era nato.'],
+    ['Quello che avevo scritto davvero', 'Prima di accettare il riassunto ho riletto l’appunto originale.'],
+    ['Un legame da rivedere', 'Ho scritto che avevo ancora dei dubbi. Un nuovo appunto avrebbe potuto cambiare la spiegazione.'],
   ],
 };
 
