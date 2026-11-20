@@ -1,0 +1,28 @@
+---
+import { getEntry } from 'astro:content';
+import HuhuArticle from '../../content/articles/huhu.it.astro';
+import source from '../../content/articles/huhu.it.astro?raw';
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import { articleUrl, interactiveHeadings } from '../../lib/articles';
+
+const original = await getEntry('articles', 'huhu');
+if (!original) throw new Error('The huhu article is missing from the articles collection.');
+const article = {
+  ...original,
+  data: {
+    ...original.data,
+    title: 'huhu: le strade che può prendere una vita',
+    description: 'Perché sto costruendo huhu, un sistema operativo per una persona. Annota quello che succede, segue i legami tra gli eventi e prova a capire quali strade potrebbero aprirsi.',
+  },
+};
+---
+<ArticleLayout
+  {article}
+  lang="it"
+  alternate={{ href: articleUrl(original), lang: 'en' }}
+  headings={interactiveHeadings(source)}
+  interactiveSource={source}
+  ogImage={original.data.still ?? undefined}
+>
+  <HuhuArticle />
+</ArticleLayout>

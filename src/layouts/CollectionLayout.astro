@@ -1,18 +1,26 @@
 ---
 import WebAnalytics from '../components/WebAnalytics.astro';
-interface Props { title: string; description?: string; ogImage?: string; compact?: boolean; backToCollection?: boolean; collectionIndex?: boolean; research?: 'index' | 'article'; noindex?: boolean; articleMeta?: { published: string; updated?: string };  }
-const { title, description = 'A living collection of apps, games and small software by Thomas.', ogImage = '/assets/dither-reflection.png', compact = false, backToCollection = false, collectionIndex = false, research, noindex = false, articleMeta } = Astro.props;
+interface Props { title: string; description?: string; ogImage?: string; compact?: boolean; backToCollection?: boolean; collectionIndex?: boolean; research?: 'index' | 'article'; noindex?: boolean; articleMeta?: { published: string; updated?: string }; lang?: 'en' | 'it'; alternate?: { href: string; lang: 'en' | 'it' }; }
+const { title, description = 'A living collection of apps, games and small software by Thomas.', ogImage = '/assets/dither-reflection.png', compact = false, backToCollection = false, collectionIndex = false, research, noindex = false, articleMeta, lang = 'en', alternate } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const section = research ? { label:'research', href:'/research' } : { label:'portfolio', href:'/home' };
+const copy = lang === 'it'
+  ? { navigation: 'Navigazione del sito', profile: 'profilo', dark: 'Passa al tema scuro', light: 'Passa al tema chiaro' }
+  : { navigation: 'Site navigation', profile: 'id card', dark: 'Switch to dark appearance', light: 'Switch to light appearance' };
 ---
 <!doctype html>
-<html lang="en">
+<html lang={lang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <meta name="theme-color" content="#121212" />
     <link rel="canonical" href={canonical} />
+    {alternate && <>
+      <link rel="alternate" hreflang={lang} href={canonical} />
+      <link rel="alternate" hreflang={alternate.lang} href={new URL(alternate.href, Astro.site).href} />
+      <meta property="og:locale" content={lang === 'it' ? 'it_IT' : 'en_GB'} />
+    </>}
     <title>{title}</title>
     <meta property="og:type" content={articleMeta ? "article" : "website"} />
     {noindex && <meta name="robots" content="noindex, nofollow" />}
@@ -34,10 +42,10 @@ const section = research ? { label:'research', href:'/research' } : { label:'por
     <div class:list={['collection-shell', {compact, 'square-index':collectionIndex, 'collection-index':collectionIndex, 'research-index':research==='index', 'project-page':backToCollection, 'research-article':research==='article'}]}>
       <header class="site-header">
         <a class="owner" href={research ? '/' : section.href}><img src="/assets/avatar.png" width="32" height="32" alt="" /><span>{research ? 'thomas' : section.label}</span></a>
-        <nav aria-label="Site navigation">
-          <a href="/">id card</a>
+        <nav aria-label={copy.navigation}>
+          <a href="/">{copy.profile}</a>
           {research === 'index' && <a href="/rss.xml">rss</a>}
-          <button id="theme-toggle" type="button" aria-label="Switch to dark appearance">
+          <button id="theme-toggle" type="button" aria-label={copy.dark} data-dark-label={copy.dark} data-light-label={copy.light}>
             <svg width="20" height="20" viewBox="0 0 20 20" shape-rendering="crispEdges" fill="currentColor" aria-hidden="true">
               <g class="sun-icon">
                 <path d="M8 6h4v1h1v1h1v4h-1v1h-1v1H8v-1H7v-1H6V8h1V7h1Z"/>
@@ -58,7 +66,7 @@ const section = research ? { label:'research', href:'/research' } : { label:'por
     <script is:inline>
       (function () {
         var button = document.getElementById('theme-toggle');
-        function label() { button.setAttribute('aria-label', document.documentElement.dataset.theme === 'dark' ? 'Switch to light appearance' : 'Switch to dark appearance'); }
+        function label() { button.setAttribute('aria-label', document.documentElement.dataset.theme === 'dark' ? button.dataset.lightLabel : button.dataset.darkLabel); }
         label();
         button.addEventListener('click', function () {
           var next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';

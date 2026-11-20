@@ -6,20 +6,29 @@ interface Props {
   headings: ArticleHeading[];
   previous?: Article;
   next?: Article;
+  lang?: 'en' | 'it';
+  alternate?: { href: string; lang: 'en' | 'it' };
+  interactiveSource?: string;
+  ogImage?: string;
 }
-const { article, headings, previous, next } = Astro.props;
+const { article, headings, previous, next, lang = 'en', alternate, interactiveSource, ogImage } = Astro.props;
 const { title, description, published, updated, versionNote, status } = article.data;
 const sections = headings.filter(heading => heading.depth === 2 || heading.depth === 3);
-const minutes = readingMinutes(article);
+const minutes = readingMinutes(article, interactiveSource);
+const italian = lang === 'it';
+const locale = italian ? 'it-IT' : 'en-GB';
+const copy = italian
+  ? { contents: 'Indice', contentsLabel: 'Indice dell’articolo', sections: 'sezioni', published: 'Pubblicato il', updated: 'Aggiornato il', read: 'min di lettura' }
+  : { contents: 'Contents', contentsLabel: 'Article contents', sections: 'sections', published: 'Published', updated: 'Updated', read: 'min read' };
 // Existing benchmark prose already contains its measured-version note and badge.
 const hasBodyVersionNote = /^> Measured on/m.test(article.body ?? '');
-const image = status === 'draft' ? `/previews/${article.id}.png` : `/assets/og/${article.id}.png`;
+const image = ogImage ?? (status === 'draft' ? `/previews/${article.id}.png` : `/assets/og/${article.id}.png`);
 ---
-<CollectionLayout title={`${title} | thomas`} description={description} ogImage={image} compact research="article" noindex={status === 'draft'} articleMeta={{ published: published.toISOString(), updated: updated?.toISOString() }}>
+<CollectionLayout title={`${title} | thomas`} description={description} ogImage={image} {lang} {alternate} compact research="article" noindex={status === 'draft'} articleMeta={{ published: published.toISOString(), updated: updated?.toISOString() }}>
   <div class="reading-grid">
     <aside class="desktop-contents">
-      <nav aria-label="Article contents">
-        <p>Contents</p>
+      <nav aria-label={copy.contentsLabel}>
+        <p>{copy.contents}</p>
         <ol>{sections.map(heading => <li class:list={{ nested: heading.depth === 3 }}><a href={`#${heading.slug}`}>{heading.text}</a></li>)}</ol>
       </nav>
     </aside>
@@ -28,22 +37,23 @@ const image = status === 'draft' ? `/previews/${article.id}.png` : `/assets/og/$
         {status === 'draft' && <p class="draft-note">Private draft · local preview only</p>}
         <div class="article-meta">
           <span>{article.data.author}</span>
-          <time datetime={published.toISOString()}>{status === 'draft' ? 'Draft date' : 'Published'} {displayDate(published)}</time>
-          {updated && <span>Updated <time datetime={updated.toISOString()}>{displayDate(updated)}</time></span>}
-          <span>{minutes} min read</span>
+          <time datetime={published.toISOString()}>{status === 'draft' ? 'Draft date' : copy.published} {displayDate(published, locale)}</time>
+          {updated && <span>{copy.updated} <time datetime={updated.toISOString()}>{displayDate(updated, locale)}</time></span>}
+          <span>{minutes} {copy.read}</span>
+          {alternate && <a href={alternate.href} lang={alternate.lang} hreflang={alternate.lang}>{alternate.lang === 'it' ? 'Leggi in italiano' : 'Read in English'}</a>}
         </div>
         <h1>{title}</h1>
         {versionNote && !hasBodyVersionNote && <p class="version-note">{versionNote}</p>}
       </header>
       <details class="mobile-contents">
-        <summary>Contents <span>{sections.length} sections</span></summary>
-        <nav aria-label="Article contents"><ol>{sections.map(heading => <li class:list={{ nested: heading.depth === 3 }}><a href={`#${heading.slug}`}>{heading.text}</a></li>)}</ol></nav>
+        <summary>{copy.contents} <span>{sections.length} {copy.sections}</span></summary>
+        <nav aria-label={copy.contentsLabel}><ol>{sections.map(heading => <li class:list={{ nested: heading.depth === 3 }}><a href={`#${heading.slug}`}>{heading.text}</a></li>)}</ol></nav>
       </details>
       <div class="article-body"><slot /></div>
-      <nav class="article-neighbours" aria-label="More articles">
+      {(!italian || previous || next) && <nav class="article-neighbours" aria-label="More articles">
         {previous ? <a href={articleUrl(previous)} rel="prev"><span>Previous article</span><strong>{previous.data.title}</strong></a> : <span />}
         {next && <a href={articleUrl(next)} rel="next"><span>Next article</span><strong>{next.data.title}</strong></a>}
-      </nav>
+      </nav>}
     </article>
   </div>
 </CollectionLayout>

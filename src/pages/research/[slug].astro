@@ -17,8 +17,9 @@ const next = index > 0 ? published[index - 1] : undefined;
 const rendered = article.data.kind === 'interactive' ? undefined : await render(article);
 const Content = rendered?.Content;
 const headings = article.data.kind === 'interactive' ? interactiveHeadings() : (rendered?.headings ?? []).map(heading => ({ ...heading, text: heading.text.replace(/#$/, '') }));
+const alternate = article.id === 'huhu' ? { href: '/it', lang: 'it' } as const : undefined;
 ---
-<ArticleLayout {article} {headings} {previous} {next}>
+<ArticleLayout {article} {headings} {previous} {next} {alternate}>
   {article.data.kind === 'interactive' ? <HuhuArticle /> : Content && <Content />}
   {article.id === 'same-answers-lower-cost' && <DoomEasterEgg />}
 </ArticleLayout>

@@ -1,24 +1,29 @@
 ---
 import { lensNames, lifeEntries, lifeLinks } from '../data/huhu-demo';
 import { causalScenarios } from '../lib/huhu-counterfactual';
-interface Props { fullscreen?: boolean; }
-const { fullscreen=false }=Astro.props;
+import { demoCopy } from '../data/huhu-demo-copy';
+import { italianEntry } from '../data/huhu-demo-records.it';
+interface Props { fullscreen?: boolean; lang?: 'en' | 'it'; }
+const { fullscreen = false, lang = 'en' } = Astro.props;
+const copy = demoCopy[lang];
+const articlePath = lang === 'it' ? '/it' : '/research/huhu';
+const entries = lang === 'it' ? lifeEntries.map(italianEntry) : lifeEntries;
 ---
-<huhu-demo class:list={{'is-fullscreen':fullscreen}} data-records={JSON.stringify({entries:lifeEntries,links:lifeLinks})}>
+<huhu-demo class:list={{'is-fullscreen':fullscreen}} data-lang={lang} data-records={JSON.stringify({ entries, links: lifeLinks })}>
   <header class="demo-toolbar">
-    <div role="group" aria-label="Explore huhu">
-      <button type="button" data-view="story" aria-pressed="true">One small event</button>
-      <button type="button" data-view="hive" aria-pressed="false">Explore the hive</button>
+    <div role="group" aria-label={copy.explore}>
+      <button type="button" data-view="story" aria-pressed="true">{copy.storyView}</button>
+      <button type="button" data-view="hive" aria-pressed="false">{copy.hiveView}</button>
     </div>
-    {fullscreen ? <a href="/research/huhu#life-graph">Back to article</a> : <a href="/research/huhu/graph">Open larger ↗</a>}
+    {fullscreen ? <a href={`${articlePath}#life-graph`}>{copy.back}</a> : <a href={`${articlePath}/graph`}>{copy.enlarge}</a>}
   </header>
-  <section class="story-view" aria-label="A fictional example">
+  <section class="story-view" aria-label={copy.fictionalExample}>
     <div class="story-heading">
-      <label class="story-picker">Try a story <select data-scenario>{causalScenarios.map(s=><option value={s.id}>{s.title}</option>)}</select></label>
+      <label class="story-picker">{copy.choose} <select data-scenario>{causalScenarios.map(s => <option value={s.id}>{copy.scenarioTitles[s.id] ?? s.title}</option>)}</select></label>
       <h3 data-question></h3>
       <p data-intro></p>
-      <div class="story-switch" role="group" aria-label="Compare the two stories">
-        <button type="button" data-world="actual" aria-pressed="true">What happened</button>
+      <div class="story-switch" role="group" aria-label={copy.compare}>
+        <button type="button" data-world="actual" aria-pressed="true">{copy.actual}</button>
         <button type="button" data-world="without" aria-pressed="false"></button>
       </div>
     </div>
@@ -35,24 +40,24 @@ const { fullscreen=false }=Astro.props;
         <div class="probabilities" hidden>
           <div><strong data-score-absent></strong><span data-label-absent></span></div>
           <div><strong data-score-present></strong><span data-label-present></span></div>
-          <p>Probability from 0 to 1. These numbers come from assumptions I chose for this example.</p>
+          <p>{copy.probabilityNote}</p>
         </div>
-        <a class="calculation-link" href="/research/huhu#causal-calculation">How I calculate this →</a>
+        <a class="calculation-link" href={`${articlePath}#causal-calculation`}>{copy.calculation}</a>
       </div>
     </div>
   </section>
-  <section class="hive-view" hidden aria-label="Connected entries">
-    <div class="hive-help"><p>Each dot is an entry. Tap one to read it. Drag the empty space to turn the hive.</p><button type="button" data-motion>Pause motion</button></div>
-    <div class="lens-filter" role="group" aria-label="Look through a lens">
-      <button type="button" data-lens="" aria-pressed="true">all</button>
-      {lensNames.map(lens=><button type="button" data-lens={lens} aria-pressed="false">{lens}</button>)}
+  <section class="hive-view" hidden aria-label={copy.connections}>
+    <div class="hive-help"><p>{copy.instructions}</p><button type="button" data-motion>{copy.pauseMotion}</button></div>
+    <div class="lens-filter" role="group" aria-label={copy.filter}>
+      <button type="button" data-lens="" aria-pressed="true">{copy.all}</button>
+      {lensNames.map(lens=><button type="button" data-lens={lens} aria-pressed="false">{copy.lenses[lens]}</button>)}
     </div>
     <div class="hive-stage">
-      <svg class="hive" viewBox="-360 -360 720 720" aria-label="Interactive spherical network of fictional entries">
+      <svg class="hive" viewBox="-360 -360 720 720" aria-label={copy.graphLabel}>
         <g class="graph-viewport">
           <g class="edges" aria-hidden="true"></g><g class="causal-edges" aria-hidden="true"></g>
-          {lifeEntries.map(entry=>(
-            <g class:list={['life-node',{spark:entry.spark}]} data-entry={entry.id} role="button" tabindex={entry.id==='conversation'?0:-1} aria-label={`Read: ${entry.title}`} aria-pressed="false">
+          {entries.map(entry=>(
+            <g class:list={['life-node',{spark:entry.spark}]} data-entry={entry.id} role="button" tabindex={entry.id==='conversation'?0:-1} aria-label={`${copy.readEntry} ${entry.title}`} aria-pressed="false">
               <circle class="hit-area" r={entry.spark?19:12} />
               {entry.spark ? <path class="star" d="M-3-10H3V-5H5V-3H10V3H5V5H3V10H-3V5H-5V3H-10V-3H-5V-5H-3Z" /> : <circle class="neuron" r="3.2" />}
               <text class="node-label" x="15" y="-10">{entry.title}</text>
@@ -62,69 +67,29 @@ const { fullscreen=false }=Astro.props;
         </g>
       </svg>
       <aside class="entry-reader" hidden aria-live="polite">
-        <button type="button" data-reader-close aria-label="Close entry">×</button>
+        <button type="button" data-reader-close aria-label={copy.closeEntry}>×</button>
         <p class="entry-date" data-date></p><h4 data-title></h4><p data-body></p>
-        <dl class="entry-facts"><div><dt>lenses</dt><dd data-lenses></dd></div><div><dt>made it happen</dt><dd data-who></dd></div></dl>
-        <p class="entry-links-label">Connected entries</p><div data-links></div>
+        <dl class="entry-facts"><div><dt>{copy.lensesLabel}</dt><dd data-lenses></dd></div><div><dt>{copy.whoLabel}</dt><dd data-who></dd></div></dl>
+        <p class="entry-links-label">{copy.connections}</p><div data-links></div>
       </aside>
     </div>
   </section>
-  <p class="demo-disclosure">Fictional stories. This shows the idea, not proven causes in someone’s life.</p>
-  <noscript><p>Enable JavaScript to try the example.</p></noscript>
+  <p class="demo-disclosure">{copy.disclosure}</p>
+  <noscript><p>{copy.noscript}</p></noscript>
 </huhu-demo>
 <script>
   import type { LifeEntry, lifeLinks } from '../data/huhu-demo';
-  import { whoLabels } from '../data/huhu-demo';
+  import { demoCopy } from '../data/huhu-demo-copy';
   import { createHuhuSphere } from '../lib/huhu-sphere';
   import { calculateCounterfactual, causalScenarios } from '../lib/huhu-counterfactual';
-  type Story={question:string;intro:string;without:string;steps:[string,string,string][];alternative:string;actual:string;explanation:string;absent:string;present:string;};
-  const stories:Record<string,Story>={
-    conversation:{
-      question:'Could a conversation change what I build weeks later?',
-      intro:'Sam mentions a route home. Almost a month later, I start a project.',
-      without:'Without that conversation',
-      steps:[['conversation','3 September','Sam mentions the canal route'],['new-route','10 September','I try it and notice a workshop'],['workshop','19 September','I visit the workshop'],['device-decision','1 October','I decide to build a device']],
-      alternative:'I also had an older sketch. That idea could have led me to build the device another way.',
-      actual:'The project started. But did it need that conversation?',
-      explanation:'The entries connect the conversation to the project. To ask whether it made a difference, I imagine the same life without it.',
-      absent:'Project does not start by 1 October',present:'Project still starts by 1 October'
-    },
-    run:{
-      question:'Could Tuesday’s run explain Thursday’s pain?',
-      intro:'A run, a change in pace, then pain two days later.',
-      without:'Without that run',
-      steps:[['run','Tuesday','I go for a run'],['pace','Minute 14','My pace slows down'],['ankle','Thursday','I report ankle pain']],
-      alternative:'The hill could explain the slower pace. Pain could have another cause. Slowing down does not itself cause pain in this model.',
-      actual:'The pain came later. That alone does not explain it.',
-      explanation:'I compare what happened with an imagined version where I skipped the run. The pace change is a clue, not proof of an injury.',
-      absent:'The later pain does not occur',present:'The later pain still occurs'
-    },
-    idea:{
-      question:'Would I have had the idea without that walk?',
-      intro:'Something I notice outside becomes an idea for a small tool.',
-      without:'Without that walk',
-      steps:[['walk','4 October, afternoon','I walk beside the river'],['colour','That evening','I want to keep the colour of the water'],['idea','5 October','I imagine a tool for collecting colours']],
-      alternative:'Another place or photograph might have given me the same idea.',
-      actual:'The idea grew from the walk. Was that the only way?',
-      explanation:'I keep the connection to the original thought, then ask whether the idea might still have arrived through something else.',
-      absent:'The tool idea does not arise',present:'The tool idea still arises'
-    },
-    music:{
-      question:'Would I have made the melody without that song?',
-      intro:'Alex sends me a song. Two days later, I try a melody of my own.',
-      without:'Without that song',
-      steps:[['song','7 October','Alex sends me a song'],['music','9 October','I try a melody inspired by it']],
-      alternative:'Another source of inspiration could still have led to that melody.',
-      actual:'The song was an influence. Was it necessary?',
-      explanation:'I imagine not receiving it, while allowing for other inspiration.',
-      absent:'The melody does not arise',present:'The melody still arises'
-    }
-  };
   class HuhuDemo extends HTMLElement {
     private cleanup?:()=>void;
     disconnectedCallback(){this.cleanup?.();}
     connectedCallback(){
       if(this.dataset.ready)return;this.dataset.ready='true';
+      const lang=this.dataset.lang==='it'?'it':'en';
+      const copy=demoCopy[lang];
+      const decimals=new Intl.NumberFormat(lang,{minimumFractionDigits:2,maximumFractionDigits:2});
       const {entries,links}=JSON.parse(this.dataset.records!) as {entries:LifeEntry[];links:typeof lifeLinks};
       const byId=new Map(entries.map(entry=>[entry.id,entry]));
       const el=<T extends Element=HTMLElement>(selector:string)=>this.querySelector<T>(selector)!;
@@ -132,30 +97,30 @@ const { fullscreen=false }=Astro.props;
       let scenario=causalScenarios.find(s=>s.id===params.get('chain'))??causalScenarios[0];
       let without=false;
       const renderStory=()=>{
-        const story=stories[scenario.id];
+        const story=copy.stories[scenario.id];
         this.dataset.world=without?'without':'actual';
         el<HTMLSelectElement>('[data-scenario]').value=scenario.id;
         el('[data-question]').textContent=story.question;el('[data-intro]').textContent=story.intro;
         el('[data-world="without"]').textContent=story.without;
         this.querySelectorAll<HTMLElement>('[data-world]').forEach(button=>button.setAttribute('aria-pressed',String((button.dataset.world==='without')===without)));
-        el('[data-path-caption]').textContent=without?'Imagine the first event never happened':'Follow the entries, from first to last';
+        el('[data-path-caption]').textContent=without?copy.imagineFirstAbsent:copy.followEntries;
         const result=calculateCounterfactual(scenario,scenario.nodes[0].id)!;
         el('[data-steps]').replaceChildren(...story.steps.map(([id,date,text],i)=>{
           const li=document.createElement('li');li.classList.toggle('left-out',without&&i===0);
           const time=document.createElement('span');time.className='step-date';time.textContent=date;
           const label=document.createElement('strong');label.textContent=text;
           const state=document.createElement('span');state.className='step-state';
-          state.textContent=!without?'':i===0?'Does not happen':result.probabilities[id]===0?'Does not happen':result.probabilities[id]===1?'Still happens':'Might still happen another way';
+          state.textContent=!without?'':i===0||result.probabilities[id]===0?copy.doesNotHappen:result.probabilities[id]===1?copy.stillHappens:copy.mightHappen;
           li.append(time,label,state);return li;
         }));
         el('[data-other-path]').textContent=story.alternative;
-        el('[data-result-label]').textContent=without?'What might change':'What I want to understand';
-        el('[data-result-title]').textContent=without?'The outcome is no longer certain.':story.actual;
-        el('[data-result-copy]').textContent=without?'Under the assumptions in this example, the calculation gives two possibilities:':story.explanation;
+        el('[data-result-label]').textContent=without?copy.whatMightChange:copy.wantToUnderstand;
+        el('[data-result-title]').textContent=without?copy.uncertainOutcome:story.actual;
+        el('[data-result-copy]').textContent=without?copy.twoPossibilities:story.explanation;
         el<HTMLElement>('.probabilities').hidden=!without;
-        el('[data-score-absent]').textContent=result.necessity!.toFixed(2);
+        el('[data-score-absent]').textContent=decimals.format(result.necessity!);
         const outcome=scenario.nodes.find(node=>node.role==='outcome')!;
-        el('[data-score-present]').textContent=result.probabilities[outcome.id].toFixed(2);
+        el('[data-score-present]').textContent=decimals.format(result.probabilities[outcome.id]);
         el('[data-label-absent]').textContent=story.absent;el('[data-label-present]').textContent=story.present;
         el<HTMLElement>('.calculation-link').hidden=!without;
       };
@@ -168,7 +133,7 @@ const { fullscreen=false }=Astro.props;
       const transform=()=>viewport.setAttribute('transform',`scale(${scale})`);
       const motionPreference=matchMedia('(prefers-reduced-motion: reduce)');
       let motion=!motionPreference.matches;
-      const syncMotion=()=>{sphere.setPlaying(hiveOpen&&motion);el('[data-motion]').textContent=motion?'Pause motion':'Play motion';};
+      const syncMotion=()=>{sphere.setPlaying(hiveOpen&&motion);el('[data-motion]').textContent=motion?copy.pauseMotion:copy.playMotion;};
       const preferenceChanged=()=>{motion=!motionPreference.matches;syncMotion();};
       motionPreference.addEventListener('change',preferenceChanged);
       this.cleanup=()=>{sphere.destroy();motionPreference.removeEventListener('change',preferenceChanged);};
@@ -176,7 +141,7 @@ const { fullscreen=false }=Astro.props;
       const select=(id:string)=>{
         const entry=byId.get(id);if(!entry)return;selected=id;
         el('[data-date]').textContent=entry.date;el('[data-title]').textContent=entry.title;el('[data-body]').textContent=entry.text;
-        el('[data-lenses]').textContent=entry.lenses.join(', ');el('[data-who]').textContent=whoLabels[entry.who];
+        el('[data-lenses]').textContent=entry.lenses.map(lens => copy.lenses[lens]).join(', ');el('[data-who]').textContent=copy.who[entry.who];
         const neighbours=[...new Set(links.filter(l=>l.from===id||l.to===id).map(l=>l.from===id?l.to:l.from))];
         el('[data-links]').replaceChildren(...neighbours.map(id=>{
           const button=document.createElement('button');button.type='button';button.textContent=byId.get(id)!.title;button.addEventListener('click',()=>select(id));return button;
